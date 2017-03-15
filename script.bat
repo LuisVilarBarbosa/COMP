@@ -1,6 +1,6 @@
 @echo off
 
-javac *.java
+javac Auto.java
 
 java Auto c_files/*.c
 

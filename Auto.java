@@ -25,10 +25,19 @@ public class Auto {
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 ArrayList<String> tokens = p.parse(bufferedReader);
                 printStrings(tokens);
+                // change C code
+                // generate file with new code
+                String testCode = args[i];  // to change
+                compile(testCode);
+                long runTime = run();
+                System.out.println("Running time: " + runTime / Math.pow(10, 6) + " milliseconds");
+                deleteCompiled();
             } catch (FileNotFoundException e) {
                 System.err.println(e.getMessage());
             } catch (IOException e) {
                 System.err.println(e.getMessage());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -48,6 +57,21 @@ public class Auto {
     private static void printStrings(ArrayList<String> tokens) {
         for (int i = 0; i < tokens.size(); i++)
             System.out.println(tokens.get(i));
+    }
+
+    private static void compile(String file) throws IOException, InterruptedException {
+        Runtime.getRuntime().exec("gcc -Wall " + file).waitFor();
+    }
+
+    private static long run() throws IOException, InterruptedException {
+        long iniTime = System.nanoTime();
+        Runtime.getRuntime().exec("a.exe").waitFor();
+        long endTime = System.nanoTime();
+        return endTime - iniTime;   // nanoseconds
+    }
+
+    private static void deleteCompiled() throws IOException, InterruptedException {
+        Runtime.getRuntime().exec("del a.exe").waitFor();
     }
 
 }
