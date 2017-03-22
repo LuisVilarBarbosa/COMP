@@ -22,7 +22,7 @@ public class Parser {
 		ArrayList<String> words = new ArrayList<>();
 		ArrayList<String> tokens = new ArrayList<>();
 		for (int i = 0; i < lines.size(); i++) {
-			StringTokenizer st = new StringTokenizer(lines.get(i), "#", true);
+			StringTokenizer st = new StringTokenizer(lines.get(i), " 	", false);
 			while(st.hasMoreTokens())
 				tokens.add(st.nextToken());
 		}
