@@ -20,8 +20,7 @@ public class Auto {
                 System.out.println("\n" + args[i] + ":");
                 FileReader fileReader = new FileReader(args[i]);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
-                ArrayList<String> tokens = p.parse(bufferedReader);
-                printStrings(tokens);
+                p.parse(bufferedReader);
                 // change C code
                 // generate file with new code
                 String testCode = args[i];  // to change
