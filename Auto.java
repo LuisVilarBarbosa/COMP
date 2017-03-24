@@ -60,18 +60,18 @@ public class Auto {
     }
 
     private static void compile(String file) throws IOException, InterruptedException {
-        Runtime.getRuntime().exec("gcc -Wall " + file).waitFor();
+        Command.exec("gcc -Wall " + file);
     }
 
     private static long run() throws IOException, InterruptedException {
         long iniTime = System.nanoTime();
-        Runtime.getRuntime().exec("a.exe").waitFor();
+        Command.exec("a.exe");
         long endTime = System.nanoTime();
         return endTime - iniTime;   // nanoseconds
     }
 
     private static void deleteCompiled() throws IOException, InterruptedException {
-        Runtime.getRuntime().exec("del a.exe").waitFor();
+        Command.exec("del a.exe");
     }
 
 }
