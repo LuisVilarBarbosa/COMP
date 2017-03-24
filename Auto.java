@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Auto {
@@ -31,7 +28,6 @@ public class Auto {
                 compile(testCode);
                 long runTime = run();
                 System.out.println("Running time: " + runTime / Math.pow(10, 6) + " milliseconds");
-                deleteCompiled();
             } catch (FileNotFoundException e) {
                 System.err.println(e.getMessage());
             } catch (IOException e) {
@@ -40,6 +36,8 @@ public class Auto {
                 e.printStackTrace();
             }
         }
+
+        deleteCompiled();
     }
 
     private static void verifyFilesNames(String[] filesNames) {
@@ -70,8 +68,8 @@ public class Auto {
         return endTime - iniTime;   // nanoseconds
     }
 
-    private static void deleteCompiled() throws IOException, InterruptedException {
-        Command.exec("del a.exe");
+    private static void deleteCompiled() {
+        new File("a.exe").delete();
     }
 
 }
