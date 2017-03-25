@@ -6,12 +6,19 @@ public class SyntacticAnalyser {
     }
 
     public boolean Start() {
-        return Expr() && (sequence.nextToken() == null);
+        boolean goodSequence = true;
+
+        while(goodSequence) {
+            while(!sequence.nextToken().getToken().equalsIgnoreCase("#pragma"));
+            goodSequence &= Expr();
+        }
+
+        return goodSequence;
     }
 
     private boolean Expr() {
-        Token token = sequence.getCurrentToken();
         int pos = sequence.getTokenIndex();
+        Token token = sequence.getCurrentToken();
 
         if (token.getToken().equalsIgnoreCase("#pragma")) {
             token = sequence.nextToken();
@@ -24,8 +31,8 @@ public class SyntacticAnalyser {
     }
 
     private boolean Spec() {
-        Token token = sequence.nextToken();
         int pos = sequence.getTokenIndex();
+        Token token = sequence.nextToken();
 
         if (token.getToken().equalsIgnoreCase("explore")) {
             if (Macro())
@@ -43,8 +50,8 @@ public class SyntacticAnalyser {
     }
 
     private boolean Macro() {
-        Token token = sequence.nextToken();
         int pos = sequence.getTokenIndex();
+        Token token = sequence.nextToken();
 
         if (token.getType() == token.VAR_TYPE) {
             token = sequence.nextToken();
@@ -68,8 +75,8 @@ public class SyntacticAnalyser {
     }
 
     private boolean Reference() {
-        Token token = sequence.nextToken();
         int pos = sequence.getTokenIndex();
+        Token token = sequence.nextToken();
 
         if (token.getToken().equalsIgnoreCase("reference(")) {
             token = sequence.nextToken();
@@ -90,8 +97,8 @@ public class SyntacticAnalyser {
     }
 
     private boolean Value() {
-        Token token = sequence.nextToken();
         int pos = sequence.getTokenIndex();
+        Token token = sequence.nextToken();
         if (token.getType() == token.INT_TYPE | token.getType() == token.FLOAT_TYPE)
             return true;
         else
