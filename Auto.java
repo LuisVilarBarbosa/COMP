@@ -35,7 +35,8 @@ public class Auto {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ParseException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Syntactic analysis error on token '" + e.getMessage() + "'. Token number: " + e.getErrorOffset());
+                e.printStackTrace();
             }
         }
 

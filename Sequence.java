@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Vector;
 
 public class Sequence {
     private Vector<Token> tokens = new Vector<Token>();
@@ -15,6 +15,11 @@ public class Sequence {
         else return null;
     }
 
+    public void previousToken() {
+        if (i > 0)
+            i--;
+    }
+
     public void addToken(Token t) {
         tokens.add(t);
     }
@@ -29,5 +34,9 @@ public class Sequence {
         if(i < tokens.size())
             return tokens.elementAt(i);
         else return null;
+    }
+
+    public int getNumTokens() {
+        return tokens.size();
     }
 }

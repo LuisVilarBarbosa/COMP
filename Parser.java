@@ -8,8 +8,7 @@ public class Parser {
         LexicalAnalyser lexicalAnalyser = new LexicalAnalyser();
         Sequence sequence = lexicalAnalyser.generateTokensSequence(bufferedReader);
         SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(sequence);
-        if (!syntacticAnalyser.Start())
-            throw new ParseException("Syntactic analysis error.", 0);
+        syntacticAnalyser.Start();
         return sequence;
     }
 }
