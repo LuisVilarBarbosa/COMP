@@ -1,4 +1,5 @@
 import java.io.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Auto {
@@ -33,6 +34,8 @@ public class Auto {
                 System.err.println(e.getMessage());
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } catch (ParseException e) {
+                System.out.println(e.getMessage());
             }
         }
 
