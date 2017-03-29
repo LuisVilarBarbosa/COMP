@@ -18,7 +18,7 @@ public class LexicalAnalyser {
         Vector<String> lines = new Vector<>();
         String str;
         while ((str = bufferedReader.readLine()) != null)
-            lines.add(str);
+            lines.add(str.concat("\n"));
         return lines;
     }
 
@@ -33,7 +33,7 @@ public class LexicalAnalyser {
             StringTokenizer st1 = new StringTokenizer(lines.get(i), " \t", false);
             while (st1.hasMoreTokens()) {
                 String t1 = st1.nextToken();
-                StringTokenizer st2 = new StringTokenizer(t1, "(,)=", true);
+                StringTokenizer st2 = new StringTokenizer(t1, "(,)=\n", true);
 
                 while (st2.hasMoreTokens()) {
                     String t2 = st2.nextToken();
