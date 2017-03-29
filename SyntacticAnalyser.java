@@ -20,7 +20,8 @@ public class SyntacticAnalyser {
 
     public void Start() throws ParseException {
         int numTokens = sequence.getNumTokens();
-        for (int i = 0; sequence.getTokenIndex() < numTokens; i++) {
+        for (int i = 1; sequence.getTokenIndex() < numTokens; i++) {
+            // skip C code
             while (sequence.getTokenIndex() < numTokens && !sequence.nextToken().getToken().equalsIgnoreCase("#pragma"))
                 ;
             sequence.previousToken();
@@ -28,7 +29,7 @@ public class SyntacticAnalyser {
             try {
                 Expr();
             } catch (NullPointerException e) {
-                if (i == 0)  // in the first iteration
+                if (i == 1)  // in the first iteration
                     System.out.println("Syntactic analysis warning - no '#pragma' found.");
             }
         }
@@ -39,8 +40,10 @@ public class SyntacticAnalyser {
 
         if (token.getToken().equalsIgnoreCase("#pragma")) {
             token = sequence.nextToken();
-            if (token.getToken().equalsIgnoreCase("tuner"))
+            if (token.getToken().equalsIgnoreCase("tuner")) {
                 Spec();
+                return;
+            }
         }
         error();
     }
@@ -51,10 +54,13 @@ public class SyntacticAnalyser {
         if (token.getToken().equalsIgnoreCase("explore")) {
             Macro();
             Reference();
+            return;
         } else if (token.getToken().equalsIgnoreCase("max_abs_error")) {
             token = sequence.nextToken();
-            if (token.getType() == token.VAR_TYPE)
+            if (token.getType() == token.VAR_TYPE) {
                 Value();
+                return;
+            }
         }
         error();
     }
