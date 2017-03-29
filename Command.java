@@ -7,11 +7,18 @@ public class Command {
 
     public static void exec(String command) throws IOException, InterruptedException {
         Process p = Runtime.getRuntime().exec(command);
+        String str;
+
         InputStream is = p.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        String str;
-        while ((str = br.readLine()) != null)
+        BufferedReader ibr = new BufferedReader(isr);
+        while ((str = ibr.readLine()) != null)
+            System.out.println(str);
+
+        InputStream es = p.getErrorStream();
+        InputStreamReader esr = new InputStreamReader(es);
+        BufferedReader ebr = new BufferedReader(esr);
+        while ((str = ebr.readLine()) != null)
             System.out.println(str);
         p.waitFor();
     }
