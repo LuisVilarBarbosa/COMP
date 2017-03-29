@@ -35,7 +35,7 @@ public class SyntacticAnalyser {
     }
 
     private void Expr() throws ParseException {
-        Token token = sequence.getCurrentToken();
+        Token token = sequence.nextToken();
 
         if (token.getToken().equalsIgnoreCase("#pragma")) {
             token = sequence.nextToken();
@@ -81,15 +81,18 @@ public class SyntacticAnalyser {
     private void Reference() throws ParseException {
         Token token = sequence.nextToken();
 
-        if (token.getToken().equalsIgnoreCase("reference(")) {
+        if (token.getToken().equalsIgnoreCase("reference")) {
             token = sequence.nextToken();
-            if (token.getType() == token.VAR_TYPE) {
+            if (token.getToken().equalsIgnoreCase("(")) {
                 token = sequence.nextToken();
-                if (token.getToken().equalsIgnoreCase("=")) {
-                    Value();
+                if (token.getType() == token.VAR_TYPE) {
                     token = sequence.nextToken();
-                    if (token.getToken().equalsIgnoreCase(")"))
-                        return;
+                    if (token.getToken().equalsIgnoreCase("=")) {
+                        Value();
+                        token = sequence.nextToken();
+                        if (token.getToken().equalsIgnoreCase(")"))
+                            return;
+                    }
                 }
             }
         }
