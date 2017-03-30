@@ -2,8 +2,8 @@
 
 mkdir bin
 
-javac -d bin *.java
+javac -d bin tuner/*.java
 
-java -cp bin Auto c_files/*.c
+java -cp bin tuner.Auto c_files/*.c
 
 pause

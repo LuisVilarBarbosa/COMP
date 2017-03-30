@@ -1,3 +1,4 @@
+package tuner;
 import java.util.Vector;
 
 public class Sequence {
