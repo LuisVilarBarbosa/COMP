@@ -1,7 +1,9 @@
 @echo off
 
-javac Auto.java
+mkdir bin
 
-java Auto c_files/*.c
+javac -d bin *.java
+
+java -cp bin Auto c_files/*.c
 
 pause
