@@ -1,6 +1,5 @@
 bin
-
-/*.class
+tuner/*.class
 
 *.classpath
 *.project

@@ -1,4 +1,5 @@
 package tuner;
+
 /*
 Context-free grammar:
     Start -> Expr
@@ -24,13 +25,8 @@ public class SyntacticAnalyser {
 
 		for (int i = 1; sequence.getTokenIndex() < numTokens; i++) {
 			// skip C code
-			Token checkVariable = sequence.nextToken();
 			while (sequence.getTokenIndex() < numTokens 
-					&& !checkVariable.getToken().equalsIgnoreCase("#pragma")){
-				if(checkVariable.equals("STEP"))
-					System.out.println("tem step");
-				checkVariable = sequence.nextToken();
-			}
+					&& !sequence.nextToken().getToken().equalsIgnoreCase("#pragma"));
 
 			sequence.previousToken();
 
