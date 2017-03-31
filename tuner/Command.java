@@ -1,27 +1,80 @@
 package tuner;
-import java.io.BufferedReader;
+
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class Command {
+	private String executableName = "";
+	private String filePath;
 
-    public static void exec(String command) throws IOException, InterruptedException {
-        Process p = Runtime.getRuntime().exec(command);
-        String str;
+	public Command(String filePath){
+		this.filePath = filePath;
 
-        InputStream is = p.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader ibr = new BufferedReader(isr);
-        while ((str = ibr.readLine()) != null)
-            System.out.println(str);
+		prepare();
+	}
 
-        InputStream es = p.getErrorStream();
-        InputStreamReader esr = new InputStreamReader(es);
-        BufferedReader ebr = new BufferedReader(esr);
-        while ((str = ebr.readLine()) != null)
-            System.out.println(str);
-        p.waitFor();
-    }
+	/**
+	 * Builds the name of the c executable for the file located in filePath.
+	 */
+	private void prepare(){
+		File f = new File(filePath);
+		String fileName = f.getName();
+		int p = fileName.lastIndexOf(".");
+
+		executableName = fileName.substring(0, p);
+
+		if(p == -1 || !executableName.matches("\\w+") || !f.isFile())
+			executableName = "";
+	}
+
+	/**
+	 * Checks if the file was valid.
+	 * @return true if valid, else false
+	 */
+	public boolean isValid(){		
+		return !"".equals(executableName);	
+	}
+
+	/**
+	 * Compiles the c file located in filePath.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void compile() throws IOException, InterruptedException {
+		ProcessBuilder compile = new ProcessBuilder("gcc", "-Wall", "-o" + executableName, filePath);
+		Process comp = compile.start();
+		comp.waitFor();
+
+		if (comp.exitValue() == -1) {
+			System.err.println("ERROR IN COMPILE!");
+			System.exit(-1);
+		}
+	}
+
+	/**
+	 * Executa o ficheiro c.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void exec() throws IOException, InterruptedException {
+		ProcessBuilder execute = new ProcessBuilder("./" + executableName);
+		Process exec = execute.start();
+		exec.waitFor();
+
+
+		System.out.println("err: " + exec.exitValue());
+		if (exec.exitValue() == -1) {
+			// that means something was written to stderr, and you can do something like
+			System.err.println("ERROR IN EXECUTION!");
+			System.exit(-1);
+		}
+	}
+
+	/**
+	 * Deletes the executable.
+	 */
+	public void delete(){
+		new File(executableName).delete();
+	}
 
 }
