@@ -25,47 +25,54 @@ public class SyntacticAnalyser {
 
 		for (int i = 1; sequence.getTokenIndex() < numTokens; i++) {
 			// skip C code
-			while (sequence.getTokenIndex() < numTokens 
-					&& !sequence.nextToken().getToken().equalsIgnoreCase("#pragma"));
+			while (sequence.getTokenIndex() != numTokens && sequence.hasNext())
+				if("#pragma".equalsIgnoreCase(sequence.nextToken().getToken()))
+					break;
 
-			sequence.previousToken();
-
-			try {
-				Expr();
-			} catch (NullPointerException e) {
-				if (i == 1)  // in the first iteration
-					System.out.println("Syntactic analysis warning - no '#pragma' found.");
-			}
+			if(sequence.getTokenIndex() < numTokens)
+				try {
+					Expr();
+				} catch (NullPointerException e) {
+					if (i == 1)  // in the first iteration
+						System.out.println("Syntactic analysis warning - no '#pragma' found.");
+				}
 		}
 	}
 
 	private void Expr() throws ParseException {
-		Token token = sequence.nextToken();
+		Token token = sequence.getCurrentToken();
 
-		if (token.getToken().equalsIgnoreCase("#pragma")) {
+		System.out.println("Pragma? " + token.getToken());
+		if ("#pragma".equalsIgnoreCase(token.getToken())) {
 			token = sequence.nextToken();
-			if (token.getToken().equalsIgnoreCase("tuner")) {
+
+			System.out.println("Tuner? " + token.getToken());
+			if ("tuner".equalsIgnoreCase(token.getToken())) {
 				Spec();
 				return;
 			}
 		}
+
 		error();
 	}
 
 	private void Spec() throws ParseException {
 		Token token = sequence.nextToken();
 
-		if (token.getToken().equalsIgnoreCase("explore")) {
+		System.out.println("Explore or Max_Abs_Error? " + token.getToken());
+		if ("explore".equalsIgnoreCase(token.getToken())) {
 			Macro();
 			Reference();
 			return;
-		} else if (token.getToken().equalsIgnoreCase("max_abs_error")) {
+		} 
+		else if ("max_abs_error".equalsIgnoreCase(token.getToken())) {
 			token = sequence.nextToken();
 			if (token.getType() == token.VAR_TYPE) {
 				Value();
 				return;
 			}
 		}
+
 		error();
 	}
 
@@ -74,13 +81,13 @@ public class SyntacticAnalyser {
 
 		if (token.getType() == token.VAR_TYPE) {
 			token = sequence.nextToken();
-			if (token.getToken().equalsIgnoreCase("(")) {
+			if ("(".equalsIgnoreCase(token.getToken())) {
 				Value();
 				token = sequence.nextToken();
-				if (token.getToken().equalsIgnoreCase(",")) {
+				if (",".equalsIgnoreCase(token.getToken())) {
 					Value();
 					token = sequence.nextToken();
-					if (token.getToken().equalsIgnoreCase(")"))
+					if (")".equalsIgnoreCase(token.getToken()))
 						return;
 				}
 			}
@@ -91,16 +98,16 @@ public class SyntacticAnalyser {
 	private void Reference() throws ParseException {
 		Token token = sequence.nextToken();
 
-		if (token.getToken().equalsIgnoreCase("reference")) {
+		if ("reference".equalsIgnoreCase(token.getToken())) {
 			token = sequence.nextToken();
-			if (token.getToken().equalsIgnoreCase("(")) {
+			if ("(".equalsIgnoreCase(token.getToken())) {
 				token = sequence.nextToken();
 				if (token.getType() == token.VAR_TYPE) {
 					token = sequence.nextToken();
-					if (token.getToken().equalsIgnoreCase("=")) {
+					if ("=".equalsIgnoreCase(token.getToken())) {
 						Value();
 						token = sequence.nextToken();
-						if (token.getToken().equalsIgnoreCase(")"))
+						if (")".equalsIgnoreCase(token.getToken()))
 							return;
 					}
 				}
@@ -111,8 +118,10 @@ public class SyntacticAnalyser {
 
 	private void Value() throws ParseException {
 		Token token = sequence.nextToken();
+
 		if (token.getType() == token.INT_TYPE | token.getType() == token.FLOAT_TYPE)
 			return;
+
 		error();
 	}
 
