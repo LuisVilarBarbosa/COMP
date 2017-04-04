@@ -21,21 +21,17 @@ public class SyntacticAnalyser {
 	}
 
 	public void Start() throws ParseException {
-		int numTokens = sequence.getNumTokens();
+		while(sequence.hasNext()) {
+			sequence.nextToken();
 
-		for (int i = 1; sequence.getTokenIndex() < numTokens; i++) {
 			// skip C code
-			while (sequence.getTokenIndex() != numTokens && sequence.hasNext())
-				if("#pragma".equalsIgnoreCase(sequence.nextToken().getToken()))
-					break;
-
-			if(sequence.getTokenIndex() < numTokens)
+			if("#pragma".equalsIgnoreCase(sequence.getCurrentToken().getToken())){
 				try {
 					Expr();
 				} catch (NullPointerException e) {
-					if (i == 1)  // in the first iteration
-						System.out.println("Syntactic analysis warning - no '#pragma' found.");
+					System.out.println("Syntactic analysis warning - no '#pragma' found.");
 				}
+			}
 		}
 	}
 

@@ -23,15 +23,13 @@ public class Sequence {
 	}
 
 	/**
-	 * Advances to the next token in the sequence.
+	 * Advances to the next token in the sequence. 
+	 * The user has to make the verification if the sequence has a next token.
 	 * @return Next token in the sequence
 	 */
 	public Token nextToken() {
-		if(i < tokens.size()-1){
-			i++;
-			return tokens.elementAt(i);
-		}
-		return null;
+		i++;
+		return tokens.elementAt(i);
 	}
 
 	/**
