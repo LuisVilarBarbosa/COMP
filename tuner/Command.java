@@ -61,8 +61,6 @@ public class Command {
 		Process exec = execute.start();
 		exec.waitFor();
 
-
-		System.out.println("err: " + exec.exitValue());
 		if (exec.exitValue() == -1) {
 			// that means something was written to stderr, and you can do something like
 			System.err.println("ERROR IN EXECUTION!");
@@ -73,7 +71,6 @@ public class Command {
 	/**
 	 * Deletes the executable.
 	 */
-	public void delete(){
 		new File(executableName).delete();
 	}
 
