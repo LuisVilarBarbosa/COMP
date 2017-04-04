@@ -68,7 +68,7 @@ public class Command {
 	 * @throws InterruptedException
 	 */
 	public void exec() throws IOException, InterruptedException {
-		ProcessBuilder execute = new ProcessBuilder("./" + executableName);
+		ProcessBuilder execute = new ProcessBuilder(executableName + ".exe");
 		Process exec = execute.start();
 
 		String str;
