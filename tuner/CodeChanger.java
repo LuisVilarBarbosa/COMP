@@ -68,10 +68,10 @@ public class CodeChanger {
 	private void generateFileWithCode() {
 		try {
 			FileOutputStream file = new FileOutputStream(testCodeFile);
-			Token token;
+			Token token = sequence.getCurrentToken();
 			while (sequence.hasNext()){
-				token = sequence.nextToken();
 				file.write(token.getToken().concat(" ").getBytes());
+				token = sequence.nextToken();
 			}
 			file.close();
 		} catch (FileNotFoundException e) {

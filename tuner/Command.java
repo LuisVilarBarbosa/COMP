@@ -1,7 +1,10 @@
 package tuner;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Command {
 	private String executableName = "";
@@ -41,8 +44,16 @@ public class Command {
 	 * @throws InterruptedException
 	 */
 	public void compile() throws IOException, InterruptedException {
-		ProcessBuilder compile = new ProcessBuilder("gcc", "-Wall", "-o" + executableName, filePath);
+		ProcessBuilder compile = new ProcessBuilder("gcc", "-Wall", "-o " + executableName, filePath);
 		Process comp = compile.start();
+
+		String str;
+		InputStream es = comp.getErrorStream();
+		InputStreamReader esr = new InputStreamReader(es);
+		BufferedReader ebr = new BufferedReader(esr);
+		while ((str = ebr.readLine()) != null)
+			System.out.println(str);
+
 		comp.waitFor();
 
 		if (comp.exitValue() == -1) {
@@ -59,20 +70,42 @@ public class Command {
 	public void exec() throws IOException, InterruptedException {
 		ProcessBuilder execute = new ProcessBuilder("./" + executableName);
 		Process exec = execute.start();
+
+		String str;
+		InputStream es = exec.getErrorStream();
+		InputStreamReader esr = new InputStreamReader(es);
+		BufferedReader ebr = new BufferedReader(esr);
+		while ((str = ebr.readLine()) != null)
+			System.out.println(str);
+
 		exec.waitFor();
 
 		if (exec.exitValue() == -1) {
-			// that means something was written to stderr, and you can do something like
 			System.err.println("ERROR IN EXECUTION!");
 			System.exit(-1);
 		}
 	}
 
 	/**
+	 * Deletes the Executable and the File.
+	 */
+	public void delete(){
+		deleteCompiled();
+		deleteFile();
+	}
+
+	/**
 	 * Deletes the executable.
 	 */
-	public void delete() {
+	public void deleteCompiled(){
 		new File(executableName).delete();
+	}
+
+	/**
+	 * Deletes the file.
+	 */
+	public void deleteFile(){
+		new File(filePath).delete();
 	}
 
 }
