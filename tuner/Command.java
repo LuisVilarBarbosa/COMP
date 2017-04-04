@@ -7,11 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class Command {
-	private String executableName = "";
+	private String executableName;
 	private String filePath;
 
 	public Command(String filePath){
 		this.filePath = filePath;
+
+		if(!isValid(this.filePath))
+			throw new IllegalArgumentException("Invalid C file path.");
 
 		prepare();
 	}
@@ -31,11 +34,12 @@ public class Command {
 	}
 
 	/**
-	 * Checks if the file was valid.
+	 * Checks if the file is valid.
 	 * @return true if valid, else false
 	 */
-	public boolean isValid(){		
-		return !"".equals(executableName);	
+	public boolean isValid(String filePath){
+		File file = new File(filePath);
+		return file.canRead();
 	}
 
 	/**
