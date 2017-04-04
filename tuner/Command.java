@@ -71,6 +71,7 @@ public class Command {
 	/**
 	 * Deletes the executable.
 	 */
+	public void delete() {
 		new File(executableName).delete();
 	}
 
