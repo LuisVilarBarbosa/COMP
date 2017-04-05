@@ -8,6 +8,7 @@ int main() {
 	int acc = 2;
 	int buf[10] = {2}; 
 	for (i = 0; i < N; i = i + STEP) {
+    printf("%d\n", i);
 		acc = acc + buf[i];
 	}
 	acc = acc + STEP;

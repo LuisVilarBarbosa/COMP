@@ -1,20 +1,17 @@
 package tuner;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class Command {
 	private String executableName;
 	private String filePath;
 
 	public Command(String filePath){
-		this.filePath = filePath;
-
-		if(!isValid(this.filePath))
+		if(!isValid(filePath))
 			throw new IllegalArgumentException("Invalid C file path.");
+
+		this.filePath = filePath;
 
 		prepare();
 	}
@@ -27,7 +24,7 @@ public class Command {
 		String fileName = f.getName();
 		int p = fileName.lastIndexOf(".");
 
-		executableName = fileName.substring(0, p);
+		executableName = fileName.substring(0, p).trim();
 
 		if(p == -1 || !executableName.matches("\\w+") || !f.isFile())
 			executableName = "";
@@ -48,22 +45,9 @@ public class Command {
 	 * @throws InterruptedException
 	 */
 	public void compile() throws IOException, InterruptedException {
-		ProcessBuilder compile = new ProcessBuilder("gcc", "-Wall", "-o " + executableName, filePath);
-		Process comp = compile.start();
+		ProcessBuilder compile = new ProcessBuilder("gcc", "-Wall", "-o" + executableName, filePath);
 
-		String str;
-		InputStream es = comp.getErrorStream();
-		InputStreamReader esr = new InputStreamReader(es);
-		BufferedReader ebr = new BufferedReader(esr);
-		while ((str = ebr.readLine()) != null)
-			System.out.println(str);
-
-		comp.waitFor();
-
-		if (comp.exitValue() == -1) {
-			System.err.println("ERROR IN COMPILE!");
-			System.exit(-1);
-		}
+		run(compile);
 	}
 
 	/**
@@ -73,19 +57,25 @@ public class Command {
 	 */
 	public void exec() throws IOException, InterruptedException {
 		ProcessBuilder execute = new ProcessBuilder(executableName + ".exe");
-		Process exec = execute.start();
 
-		String str;
-		InputStream es = exec.getErrorStream();
-		InputStreamReader esr = new InputStreamReader(es);
-		BufferedReader ebr = new BufferedReader(esr);
-		while ((str = ebr.readLine()) != null)
-			System.out.println(str);
+		run(execute);
+	}
 
-		exec.waitFor();
+	/**
+	 * Runs the desired command.
+	 * @param pb
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	private void run(ProcessBuilder pb) throws IOException, InterruptedException{
+		pb.inheritIO();
 
-		if (exec.exitValue() == -1) {
-			System.err.println("ERROR IN EXECUTION!");
+		Process runner = pb.start();
+
+		runner.waitFor();
+
+		if (runner.exitValue() == -1) {
+			System.err.println("ERROR IN RUN!");
 			System.exit(-1);
 		}
 	}
