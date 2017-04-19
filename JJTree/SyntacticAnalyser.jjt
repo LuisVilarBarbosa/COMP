@@ -1,0 +1,84 @@
+options {
+	LOOKAHEAD=1;
+}
+
+PARSER_BEGIN(SyntacticAnalyser)
+public class SyntacticAnalyser
+{
+	public static void main(String args[]) throws ParseException {
+		if(args.length != 1) {
+			System.out.println("Usage: SyntacticAnalyser <string>");
+			return;
+		}
+	
+		SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(args[0]);
+		
+		try {
+			SimpleNode root = syntacticAnalyser.Start();
+			root.dump("");
+		} catch (TokenMgrError e) {
+			System.out.println(e.getMessage());
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+}
+PARSER_END(SyntacticAnalyser)
+
+SKIP :
+{
+" " | "\r" | "\t"
+}
+
+TOKEN:
+{
+	<VAR: ("_"|["a"-"z"]|["A"-"Z"])("_"|["a"-"z"]|["A"-"Z"]|["0"-"9"])* >
+	| < INT: (["0"-"9"])+ >
+	| <FLOAT: ((["0"-"9"])+"."(["0"-"9"])*) >
+	| < PRAGMA: ("pragma") >
+	| < TUNER: ("tuner") >
+	| < EXPLORE: ("explore") >
+	| < MAX_ABS_ERROR: ("max_abs_error") >
+	| < LEFT_PARENTHESES: ("(") >
+	| < COMMA: (",") >
+	| < RIGHT_PARENTHESES: (")") >
+	| < REFERENCE: ("reference") >
+	| < EQUAL: ("equal") >
+	| < LF: "\n" >
+}
+
+SimpleNode Start(): {}
+{
+	Expr() <LF> {return jjtThis;}
+}
+
+void Expr(): {}
+{
+	Term() ExprP()
+}
+
+void ExprP(): {Token t1, t2;}
+{
+	t1=<PRAGMA> t2=<TUNER> Spec()
+}
+
+void Spec(): {Token t1, t2;}
+{
+	(t1=<EXPLORE> Macro() Reference()) | (t1=<MAX_ABS_ERROR> t2=<VAR> Value())
+}
+
+void Macro(): {Token t1,t2, t3, t4;}
+{
+	t1=<VAR> t2=<LEFT_PARENTHESES> Value() t3=<COMMA> Value() t4=<RIGHT_PARENTHESES>
+}
+
+void Reference(): {Token t1,t2, t3, t4;}
+{
+	t1=<REFERENCE> t2=<VAR> t3=<EQUAL> Value() t4=<RIGHT_PARENTHESES>
+}
+
+void Value(): {Token t;}
+{
+	t=<INT> | t=<FLOAT>
+}
