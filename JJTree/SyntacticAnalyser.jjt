@@ -3,7 +3,6 @@ options {
 }
 
 PARSER_BEGIN(SyntacticAnalyser)
-package JJTree;
 import java.io.StringReader;
 public class SyntacticAnalyser
 {
@@ -53,38 +52,61 @@ TOKEN:
 
 SimpleNode Start(): {}
 {
-	Expr() {return jjtThis;}
+	Expr()
+	{
+		jjtThis.val = "";
+	} 
+	{return jjtThis;}
 }
 
 void Expr(): {Token t1, t2;}
 {
-	t1=<PRAGMA> t2=<TUNER> Spec()
+	t1=<PRAGMA> t2=<TUNER> 
+	{
+		jjtThis.val = (t1.image + " " + t2.image);
+	} 
+	Spec()
 }
 
 void Spec(): {Token t1, t2;}
 {
-	(t1=<EXPLORE> Macro() Reference()) | (t1=<MAX_ABS_ERROR> t2=<VAR> Value())
+	(t1=<EXPLORE>
+	{
+		jjtThis.val = t1.image;
+	} 
+	Macro() Reference()) 
+	| (t1=<MAX_ABS_ERROR> t2=<VAR>
+	{
+		jjtThis.val = (t1.image + " " + t2.image);
+	} 
+	Value())
 }
 
 void Macro(): {Token t1,t2, t3, t4;}
 {
 	t1=<VAR> t2=<LEFT_PARENTHESES> Value() t3=<COMMA> Value() t4=<RIGHT_PARENTHESES>
+	{
+		jjtThis.val = (t1.image + " " + t2.image + " " + t3.image + " " + t4.image);
+	} 
 }
 
 void Reference(): {Token t1,t2, t3, t4, t5;}
 {
 	t1=<REFERENCE> t2=<LEFT_PARENTHESES> t3=<VAR> t4=<EQUAL> Value() t5=<RIGHT_PARENTHESES>
+	{
+		jjtThis.val = (t1.image + " " + t2.image + " " + t3.image + " " + t4.image + " " + t5.image);
+	} 
 }
 
 void Value(): {Token t;}
 {
 	t=<INT> 
 	{
-		jjtThis.val = Integer.parseInt(t.image);
+		jjtThis.val = t.image;
 	} 
 	| t=<FLOAT> 
 	{
-		jjtThis.val = Integer.parseInt(t.image);
+		jjtThis.val = t.image;
 	}
 	
 }
