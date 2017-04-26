@@ -3,6 +3,7 @@ options {
 }
 
 PARSER_BEGIN(SyntacticAnalyser)
+import java.io.StringReader;
 public class SyntacticAnalyser
 {
 	public static void main(String args[]) throws ParseException {
@@ -10,8 +11,10 @@ public class SyntacticAnalyser
 			System.out.println("Usage: SyntacticAnalyser <string>");
 			return;
 		}
+		
+		StringReader sr = new StringReader(args[0]);
 	
-		SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(args[0]);
+		SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(sr);
 		
 		try {
 			SimpleNode root = syntacticAnalyser.Start();
@@ -33,10 +36,7 @@ SKIP :
 
 TOKEN:
 {
-	<VAR: ("_"|["a"-"z"]|["A"-"Z"])("_"|["a"-"z"]|["A"-"Z"]|["0"-"9"])* >
-	| < INT: (["0"-"9"])+ >
-	| <FLOAT: ((["0"-"9"])+"."(["0"-"9"])*) >
-	| < PRAGMA: ("pragma") >
+	< PRAGMA: ("#pragma") >
 	| < TUNER: ("tuner") >
 	| < EXPLORE: ("explore") >
 	| < MAX_ABS_ERROR: ("max_abs_error") >
@@ -44,21 +44,18 @@ TOKEN:
 	| < COMMA: (",") >
 	| < RIGHT_PARENTHESES: (")") >
 	| < REFERENCE: ("reference") >
-	| < EQUAL: ("equal") >
-	| < LF: "\n" >
+	| < EQUAL: ("=") >
+	| <VAR: ("_"|["a"-"z"]|["A"-"Z"])("_"|["a"-"z"]|["A"-"Z"]|["0"-"9"])* >
+	| < INT: (["0"-"9"])+ >
+	| <FLOAT: ((["0"-"9"])+"."(["0"-"9"])*) >
 }
 
 SimpleNode Start(): {}
 {
-	Expr() <LF> {return jjtThis;}
+	Expr() {return jjtThis;}
 }
 
-void Expr(): {}
-{
-	Term() ExprP()
-}
-
-void ExprP(): {Token t1, t2;}
+void Expr(): {Token t1, t2;}
 {
 	t1=<PRAGMA> t2=<TUNER> Spec()
 }
@@ -73,9 +70,9 @@ void Macro(): {Token t1,t2, t3, t4;}
 	t1=<VAR> t2=<LEFT_PARENTHESES> Value() t3=<COMMA> Value() t4=<RIGHT_PARENTHESES>
 }
 
-void Reference(): {Token t1,t2, t3, t4;}
+void Reference(): {Token t1,t2, t3, t4, t5;}
 {
-	t1=<REFERENCE> t2=<VAR> t3=<EQUAL> Value() t4=<RIGHT_PARENTHESES>
+	t1=<REFERENCE> t2=<LEFT_PARENTHESES> t3=<VAR> t4=<EQUAL> Value() t5=<RIGHT_PARENTHESES>
 }
 
 void Value(): {Token t;}
