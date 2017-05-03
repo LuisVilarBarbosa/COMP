@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class Auto {
 
@@ -26,19 +27,19 @@ public class Auto {
                 System.out.println("\n" + args[i] + ":");
                 FileReader fileReader = new FileReader(args[i]);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
-                Sequence sequence = p.parse(bufferedReader);
-                CodeChanger codeChanger = new CodeChanger(sequence);
-                codeChanger.codeVariantsTest();
+                Vector<String> c_lines = p.parse(bufferedReader);
+                //CodeChanger codeChanger = new CodeChanger(sequence);
+                //codeChanger.codeVariantsTest();
             } catch (FileNotFoundException e) {
                 System.err.println(e.getMessage());
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-            } catch (InterruptedException e) {
+            }/* catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ParseException e) {
                 System.out.println("Syntactic analysis error on token '" + e.getMessage() + "'. Token number: " + e.getErrorOffset());
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 
