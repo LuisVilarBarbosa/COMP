@@ -27,6 +27,9 @@ public class Auto {
                 FileReader fileReader = new FileReader(args[i]);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 Vector<String> c_lines = p.parse(bufferedReader);
+                //execute JJTree
+                //Node root = p.buildTreeFromFile(/* File with JJTree output */);
+                //printTree(root);
                 CodeChanger codeChanger = new CodeChanger(c_lines);
                 codeChanger.codeVariantsTest();
             } catch (FileNotFoundException e) {
@@ -56,6 +59,22 @@ public class Auto {
     private static void printStrings(ArrayList<String> tokens) {
         for (int i = 0; i < tokens.size(); i++)
             System.out.println(tokens.get(i));
+    }
+
+    private static void printTree(Node root) {
+        int indentation = 0;
+        StringBuilder sb = new StringBuilder();
+        printTreeAux(root, sb, indentation);
+        System.out.println(sb);
+    }
+
+    private static void printTreeAux(Node node, StringBuilder stringBuilder, int indentation) {
+        for (int i = 0; i < indentation; i++)
+            stringBuilder.append(" ");
+        stringBuilder.append(node.getInfo()).append("\n");
+
+        for (Node n : node.getChildren())
+            printTreeAux(n, stringBuilder, indentation + 1);
     }
 
 }
