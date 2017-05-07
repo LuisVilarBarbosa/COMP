@@ -50,63 +50,67 @@ TOKEN:
 	| <FLOAT: ((["0"-"9"])+"."(["0"-"9"])*) >
 }
 
-SimpleNode Start(): {}
+SimpleNode Start(): {Token t;}
 {
-	Expr()
-	{
-		jjtThis.val = "";
-	} 
+	t=<PRAGMA>
+	{jjtThis.val = t.image;}
+	Project()
 	{return jjtThis;}
 }
 
-void Expr(): {Token t1, t2;}
+void Project(): {Token t;}
 {
-	t1=<PRAGMA> t2=<TUNER> 
-	{
-		jjtThis.val = (t1.image + " " + t2.image);
-	} 
+	t=<TUNER>
+	{jjtThis.val = t.image;}
 	Spec()
 }
 
-void Spec(): {Token t1, t2;}
+void Spec(): {Token t;}
 {
-	(t1=<EXPLORE>
-	{
-		jjtThis.val = t1.image;
-	} 
-	Macro() Reference()) 
-	| (t1=<MAX_ABS_ERROR> t2=<VAR>
-	{
-		jjtThis.val = (t1.image + " " + t2.image);
-	} 
+	(t=<EXPLORE>
+	{jjtThis.val = t.image;}
+	Macro()
+	Reference())
+	|
+	(t=<MAX_ABS_ERROR>
+	{jjtThis.val = t.image;}
+	Var()
 	Value())
 }
 
-void Macro(): {Token t1,t2, t3, t4;}
+void Macro(): {Token t;}
 {
-	t1=<VAR> t2=<LEFT_PARENTHESES> Value() t3=<COMMA> Value() t4=<RIGHT_PARENTHESES>
-	{
-		jjtThis.val = (t1.image + " " + t2.image + " " + t3.image + " " + t4.image);
-	} 
+	t=<VAR>
+	{jjtThis.val = t.image;}
+	<LEFT_PARENTHESES>
+	Value()
+	<COMMA>
+	Value()
+	<RIGHT_PARENTHESES>
 }
 
-void Reference(): {Token t1,t2, t3, t4, t5;}
+void Reference(): {Token t;}
 {
-	t1=<REFERENCE> t2=<LEFT_PARENTHESES> t3=<VAR> t4=<EQUAL> Value() t5=<RIGHT_PARENTHESES>
-	{
-		jjtThis.val = (t1.image + " " + t2.image + " " + t3.image + " " + t4.image + " " + t5.image);
-	} 
+	t=<REFERENCE>
+	{jjtThis.val = t.image;}
+	<LEFT_PARENTHESES>
+	Var()
+	<EQUAL>
+	Value()
+	<RIGHT_PARENTHESES>
 }
 
 void Value(): {Token t;}
 {
-	t=<INT> 
-	{
-		jjtThis.val = t.image;
-	} 
-	| t=<FLOAT> 
-	{
-		jjtThis.val = t.image;
-	}
-	
+	t=<INT>
+	{jjtThis.val = t.image;}
+	|
+	t=<FLOAT>
+	{jjtThis.val = t.image;}
+}
+
+void Var(): {Token t;}
+{
+	t=<VAR>
+	{jjtThis.val = t.image;}
 }
