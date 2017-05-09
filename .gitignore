@@ -2,6 +2,7 @@
 JJTree/*
 !JJTree/SyntacticAnalyser.jjt
 !JJTree/SimpleNode.java
+!JJTree/JJTreeRunner.sh
 
 *.classpath
 *.project
