@@ -3,6 +3,7 @@ options {
 }
 
 PARSER_BEGIN(SyntacticAnalyser)
+package JJTree;
 import java.io.StringReader;
 public class SyntacticAnalyser
 {
