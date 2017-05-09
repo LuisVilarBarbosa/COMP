@@ -45,9 +45,8 @@ public class CodeExecutor {
 	 * @throws InterruptedException
 	 */
 	public void compile() throws IOException, InterruptedException {
-		ProcessBuilder compile = new ProcessBuilder("gcc", "-Wall", "-o" + executableName, filePath);
-
-		run(compile);
+		Command command = new Command("gcc", "-Wall", "-o" + executableName, filePath);
+		command.run();
 	}
 
 	/**
@@ -56,28 +55,8 @@ public class CodeExecutor {
 	 * @throws InterruptedException
 	 */
 	public void exec() throws IOException, InterruptedException {
-		ProcessBuilder execute = new ProcessBuilder(executableName + ".exe");
-
-		run(execute);
-	}
-
-	/**
-	 * Runs the desired command.
-	 * @param pb
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	private void run(ProcessBuilder pb) throws IOException, InterruptedException{
-		pb.inheritIO();
-
-		Process runner = pb.start();
-
-		runner.waitFor();
-
-		if (runner.exitValue() == -1) {
-			System.err.println("ERROR IN RUN!");
-			System.exit(-1);
-		}
+		Command command = new Command(executableName + ".exe");
+		command.run();
 	}
 
 	/**
