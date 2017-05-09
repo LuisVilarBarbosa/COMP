@@ -3,11 +3,11 @@ package tuner;
 import java.io.File;
 import java.io.IOException;
 
-public class Command {
+public class CodeExecutor {
 	private String executableName;
 	private String filePath;
 
-	public Command(String filePath){
+	public CodeExecutor(String filePath){
 		if(!isValid(filePath))
 			throw new IllegalArgumentException("Invalid C file path.");
 

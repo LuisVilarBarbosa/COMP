@@ -38,12 +38,12 @@ public class CodeChanger {
         Vector<String> codeChanged;
         while ((codeChanged = changeCCode()) != null) {
             generateFileWithCode(codeChanged);
-            Command command = new Command(testCodeFile);
-            command.compile();
-            long runTime = run(command);
+            CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
+            codeExecutor.compile();
+            long runTime = run(codeExecutor);
             System.out.println("Running time: " + runTime / Math.pow(10, 6) + " milliseconds");
 
-            command.delete();
+            codeExecutor.delete();
         }
     }
 
@@ -74,9 +74,9 @@ public class CodeChanger {
         file.close();
     }
 
-    private long run(Command command) throws IOException, InterruptedException {
+    private long run(CodeExecutor codeExecutor) throws IOException, InterruptedException {
         long iniTime = System.nanoTime();
-        command.exec();
+        codeExecutor.exec();
         long endTime = System.nanoTime();
         return endTime - iniTime;   // nanoseconds
     }
