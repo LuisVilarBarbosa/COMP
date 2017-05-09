@@ -1,5 +1,7 @@
-bin
-tuner/*.class
+*.class
+JJTree/*
+!JJTree/SyntacticAnalyser.jjt
+!JJTree/SimpleNode.java
 
 *.classpath
 *.project
