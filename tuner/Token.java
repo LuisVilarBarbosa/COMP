@@ -1,4 +1,6 @@
 package tuner;
+
+/* Possibly to delete */
 public class Token {
     public static final int UNDEFINED_TYPE = 0;
     public static final int VAR_TYPE = 1;

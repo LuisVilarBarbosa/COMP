@@ -6,6 +6,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/* To delete */
 public class LexicalAnalyser {
 
     public Sequence generateTokensSequence(BufferedReader bufferedReader) throws IOException {

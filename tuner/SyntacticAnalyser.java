@@ -13,6 +13,7 @@ Context-free grammar:
 
 import java.text.ParseException;
 
+/* To delete */
 public class SyntacticAnalyser {
 	private Sequence sequence;
 

@@ -1,6 +1,7 @@
 package tuner;
 import java.util.Vector;
 
+/* To delete */
 public class Sequence {
 	private Vector<Token> tokens = new Vector<Token>();
 	private int i;
