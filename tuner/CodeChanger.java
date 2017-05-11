@@ -21,7 +21,7 @@ public class CodeChanger {
      */
     private void findPragmas() throws Exception {
         for (int i = 0; i < c_lines.size(); i++) {
-            if (c_lines.get(i).contains("#pragma"))
+            if (c_lines.get(i).contains("#pragma tuner"))
                 pragmaIndexes.add(i);
         }
         if (pragmaIndexes.size() % 2 != 0)

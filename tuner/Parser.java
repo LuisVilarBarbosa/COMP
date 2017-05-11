@@ -41,7 +41,7 @@ public class Parser {
     private Vector<Integer> findPragmas(Vector<String> c_lines) throws Exception {
         Vector<Integer> pragmaIndexes = new Vector<>();
         for (int i = 0; i < c_lines.size(); i++) {
-            if (c_lines.get(i).contains("#pragma"))
+            if (c_lines.get(i).contains("#pragma tuner"))
                 pragmaIndexes.add(i);
         }
         if (pragmaIndexes.size() % 2 != 0)
