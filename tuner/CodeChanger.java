@@ -3,6 +3,8 @@ package tuner;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CodeChanger {
     private ArrayList<String> c_lines;
@@ -20,9 +22,21 @@ public class CodeChanger {
      * Guarda o index da string.
      */
     private void findPragmas() throws Exception {
+        Pattern pattern = Pattern.compile("[\t ]*#pragma[\t ]+tuner.*");
+        boolean ignoreLines = false;
         for (int i = 0; i < c_lines.size(); i++) {
-            if (c_lines.get(i).contains("#pragma tuner"))
-                pragmaIndexes.add(i);
+            String line = c_lines.get(i);
+            if (ignoreLines) {
+                // Cannot exist an uncommented pragma.
+                if (line.contains("*/"))
+                    ignoreLines = false;
+            } else {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.matches())
+                    pragmaIndexes.add(i);
+                if (line.contains("/*"))
+                    ignoreLines = true;
+            }
         }
         if (pragmaIndexes.size() % 2 != 0)
             throw new Exception("Odd number of pragmas. For each clause must exist a start pragma and an end pragma.");

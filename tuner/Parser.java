@@ -3,6 +3,8 @@ package tuner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
 
@@ -37,11 +39,24 @@ public class Parser {
         return pragmaTrees;
     }
 
+    // Comments started by "//" are ignored by the regular expression.
     private ArrayList<Integer> findPragmas(ArrayList<String> c_lines) throws Exception {
         ArrayList<Integer> pragmaIndexes = new ArrayList<>();
+        Pattern pattern = Pattern.compile("[\t ]*#pragma[\t ]+tuner.*");
+        boolean ignoreLines = false;
         for (int i = 0; i < c_lines.size(); i++) {
-            if (c_lines.get(i).contains("#pragma tuner"))
-                pragmaIndexes.add(i);
+            String line = c_lines.get(i);
+            if (ignoreLines) {
+                // Cannot exist an uncommented pragma.
+                if (line.contains("*/"))
+                    ignoreLines = false;
+            } else {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.matches())
+                    pragmaIndexes.add(i);
+                if (line.contains("/*"))
+                    ignoreLines = true;
+            }
         }
         if (pragmaIndexes.size() % 2 != 0)
             throw new Exception("Odd number of pragmas. For each clause must exist a start pragma and an end pragma.");
