@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CodeChanger {
-    private ArrayList<String> c_lines;
+    private ArrayList<String> codeLines;
     private String testCodeFile = "test.c";
     private ArrayList<Integer> pragmaIndexes;
 
-    public CodeChanger(ArrayList<String> c_lines, ArrayList<Integer> pragmaIndexes) throws Exception {
-        this.c_lines = c_lines;
+    public CodeChanger(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes) throws Exception {
+        this.codeLines = codeLines;
         this.pragmaIndexes = pragmaIndexes;
     }
 
@@ -39,7 +39,7 @@ public class CodeChanger {
      * @return
      */
     private ArrayList<String> changeCCode() {
-        ArrayList<String> codeChanged = c_lines;
+        ArrayList<String> codeChanged = codeLines;
         boolean changed = false;
 
         for (int i = 0, j = pragmaIndexes.size() - 1; i <= j; i++, j--) {

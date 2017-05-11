@@ -38,12 +38,12 @@ public class Parser {
     }
 
     // Comments started by "//" are ignored by the regular expression.
-    private ArrayList<Integer> findPragmas(ArrayList<String> c_lines) throws Exception {
+    private ArrayList<Integer> findPragmas(ArrayList<String> codeLines) throws Exception {
         ArrayList<Integer> pragmaIndexes = new ArrayList<>();
         Pattern pattern = Pattern.compile("[\t ]*#pragma[\t ]+tuner.*");
         boolean ignoreLines = false;
-        for (int i = 0; i < c_lines.size(); i++) {
-            String line = c_lines.get(i);
+        for (int i = 0; i < codeLines.size(); i++) {
+            String line = codeLines.get(i);
             if (ignoreLines) {
                 // Cannot exist an uncommented pragma.
                 if (line.contains("*/"))
@@ -61,12 +61,12 @@ public class Parser {
         return pragmaIndexes;
     }
 
-    private ArrayList<Node> generateSyntacticAnalysisTrees(ArrayList<String> c_lines, ArrayList<Integer> pragmaIndexes) throws Exception {
+    private ArrayList<Node> generateSyntacticAnalysisTrees(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes) throws Exception {
         ArrayList<Node> pragmaTrees = new ArrayList<>();
         for (int i = 0, j = pragmaIndexes.size() - 1; i <= j; i++, j--) {
             Node root = new Node("");
-            buildTree(c_lines.get(pragmaIndexes.get(i)), root);
-            buildTree(c_lines.get(pragmaIndexes.get(j)), root);
+            buildTree(codeLines.get(pragmaIndexes.get(i)), root);
+            buildTree(codeLines.get(pragmaIndexes.get(j)), root);
             pragmaTrees.add(root);
         }
         return pragmaTrees;
