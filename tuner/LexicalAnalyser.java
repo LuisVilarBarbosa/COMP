@@ -1,8 +1,9 @@
 package tuner;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,27 +11,27 @@ import java.util.regex.Pattern;
 public class LexicalAnalyser {
 
     public Sequence generateTokensSequence(BufferedReader bufferedReader) throws IOException {
-        Vector<String> lines = getLines(bufferedReader);
-        Vector<Token> tokens = getTokens(lines);
+        ArrayList<String> lines = getLines(bufferedReader);
+        ArrayList<Token> tokens = getTokens(lines);
         Sequence sequence = new Sequence(tokens);
         return sequence;
     }
 
-    private Vector<String> getLines(BufferedReader bufferedReader) throws IOException {
-        Vector<String> lines = new Vector<>();
+    private ArrayList<String> getLines(BufferedReader bufferedReader) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
         String str;
         while ((str = bufferedReader.readLine()) != null)
             lines.add(str.concat("\n"));
         return lines;
     }
 
-    private Vector<Token> getTokens(Vector<String> lines) {
+    private ArrayList<Token> getTokens(ArrayList<String> lines) {
         Pattern VAR = Pattern.compile("(_|[a-z]|[A-Z])(_|[a-z]|[A-Z]|[0-9])*");
         Pattern INT = Pattern.compile("([0-9]+)");
         Pattern FLOAT = Pattern.compile("([0-9]+.[0-9]*)");
 
 
-        Vector<Token> tokens = new Vector<>();
+        ArrayList<Token> tokens = new ArrayList<>();
         for (int i = 0; i < lines.size(); i++) {
             StringTokenizer st1 = new StringTokenizer(lines.get(i), " \t", false);
             while (st1.hasMoreTokens()) {

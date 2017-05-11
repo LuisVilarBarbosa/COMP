@@ -3,7 +3,6 @@ package tuner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Parser {
 
@@ -14,21 +13,21 @@ public class Parser {
      * @return Sequence with all lines
      * @throws IOException
      */
-    public Vector<String> parse(BufferedReader bufferedReader) throws IOException {
+    public ArrayList<String> parse(BufferedReader bufferedReader) throws IOException {
         return getLines(bufferedReader);
     }
 
-    private Vector<String> getLines(BufferedReader bufferedReader) throws IOException {
-        Vector<String> lines = new Vector<>();
+    private ArrayList<String> getLines(BufferedReader bufferedReader) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
         String str;
         while ((str = bufferedReader.readLine()) != null)
             lines.add(str);
         return lines;
     }
 
-    public Vector<Node> generateSyntacticAnalysisTrees(Vector<String> c_lines) throws Exception {
-        Vector<Node> pragmaTrees = new Vector<>();
-        Vector<Integer> pragmaIndexes = findPragmas(c_lines);
+    public ArrayList<Node> generateSyntacticAnalysisTrees(ArrayList<String> c_lines) throws Exception {
+        ArrayList<Node> pragmaTrees = new ArrayList<>();
+        ArrayList<Integer> pragmaIndexes = findPragmas(c_lines);
         for (int i = 0, j = pragmaIndexes.size() - 1; i <= j; i++, j--) {
             Node root = new Node("");
             buildTree(c_lines.get(pragmaIndexes.get(i)), root);
@@ -38,8 +37,8 @@ public class Parser {
         return pragmaTrees;
     }
 
-    private Vector<Integer> findPragmas(Vector<String> c_lines) throws Exception {
-        Vector<Integer> pragmaIndexes = new Vector<>();
+    private ArrayList<Integer> findPragmas(ArrayList<String> c_lines) throws Exception {
+        ArrayList<Integer> pragmaIndexes = new ArrayList<>();
         for (int i = 0; i < c_lines.size(); i++) {
             if (c_lines.get(i).contains("#pragma tuner"))
                 pragmaIndexes.add(i);

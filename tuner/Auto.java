@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Auto {
 
@@ -26,8 +25,8 @@ public class Auto {
                 System.out.println("\n" + args[i] + ":");
                 FileReader fileReader = new FileReader(args[i]);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
-                Vector<String> c_lines = p.parse(bufferedReader);
-                Vector<Node> pragmaTrees = p.generateSyntacticAnalysisTrees(c_lines);
+                ArrayList<String> c_lines = p.parse(bufferedReader);
+                ArrayList<Node> pragmaTrees = p.generateSyntacticAnalysisTrees(c_lines);
                 // for(Node root : pragmaTrees) printTree(root);
                 CodeChanger codeChanger = new CodeChanger(c_lines);
                 codeChanger.codeVariantsTest();

@@ -1,16 +1,17 @@
 package tuner;
-import java.util.Vector;
+
+import java.util.ArrayList;
 
 /* To delete */
 public class Sequence {
-	private Vector<Token> tokens = new Vector<Token>();
+	private ArrayList<Token> tokens = new ArrayList<>();
 	private int i;
 
 	/**
 	 * Creates a Sequence of tokens.
 	 * @param tokens Vector with all the tokens
 	 */
-	public Sequence(Vector<Token> tokens) {
+	public Sequence(ArrayList<Token> tokens) {
 		this.tokens = tokens;
 		this.i = 0;
 	}
@@ -30,7 +31,7 @@ public class Sequence {
 	 */
 	public Token nextToken() {
 		i++;
-		return tokens.elementAt(i);
+		return tokens.get(i);
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class Sequence {
 	 */
 	public Token getCurrentToken() {
 		if(i < tokens.size())
-			return tokens.elementAt(i);
+			return tokens.get(i);
 		return null;
 	}
 

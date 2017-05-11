@@ -2,16 +2,16 @@ package tuner;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class CodeChanger {
-    private Vector<String> c_lines;
+    private ArrayList<String> c_lines;
     private String testCodeFile = "test.c";
-    private Vector<Integer> pragmaIndexes;
+    private ArrayList<Integer> pragmaIndexes;
 
-    public CodeChanger(Vector<String> c_lines) throws Exception {
+    public CodeChanger(ArrayList<String> c_lines) throws Exception {
         this.c_lines = c_lines;
-        this.pragmaIndexes = new Vector<>();
+        this.pragmaIndexes = new ArrayList<>();
         findPragmas();
     }
 
@@ -35,7 +35,7 @@ public class CodeChanger {
      * @throws InterruptedException
      */
     public void codeVariantsTest() throws IOException, InterruptedException {
-        Vector<String> codeChanged;
+        ArrayList<String> codeChanged;
         while ((codeChanged = changeCCode()) != null) {
             generateFileWithCode(codeChanged);
             CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
@@ -52,8 +52,8 @@ public class CodeChanger {
      *
      * @return
      */
-    private Vector<String> changeCCode() {
-        Vector<String> codeChanged = c_lines;
+    private ArrayList<String> changeCCode() {
+        ArrayList<String> codeChanged = c_lines;
         boolean changed = false;
 
         for (int i = 0, j = pragmaIndexes.size() - 1; i <= j; i++, j--) {
@@ -67,7 +67,7 @@ public class CodeChanger {
         return null;
     }
 
-    private void generateFileWithCode(Vector<String> code) throws IOException {
+    private void generateFileWithCode(ArrayList<String> code) throws IOException {
         FileOutputStream file = new FileOutputStream(testCodeFile);
         for (String line : code)
             file.write(line.getBytes());
