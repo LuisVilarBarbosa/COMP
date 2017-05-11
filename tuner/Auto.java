@@ -27,9 +27,8 @@ public class Auto {
                 FileReader fileReader = new FileReader(args[i]);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 Vector<String> c_lines = p.parse(bufferedReader);
-                //execute JJTree
-                //Node root = p.buildTreeFromFile(/* File with JJTree output */);
-                //printTree(root);
+                Vector<Node> pragmaTrees = p.generateSyntacticAnalysisTrees(c_lines);
+                // for(Node root : pragmaTrees) printTree(root);
                 CodeChanger codeChanger = new CodeChanger(c_lines);
                 codeChanger.codeVariantsTest();
             } catch (FileNotFoundException e) {

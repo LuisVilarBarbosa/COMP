@@ -1,8 +1,8 @@
 package tuner;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Parser {
@@ -26,11 +26,40 @@ public class Parser {
         return lines;
     }
 
-    public Node buildTreeFromFile(String filePath) throws Exception {
-        FileReader fileReader = new FileReader(filePath);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        Vector<String> lines = getLines(bufferedReader);
-        Node root = new Node("");
+    public Vector<Node> generateSyntacticAnalysisTrees(Vector<String> c_lines) throws Exception {
+        Vector<Node> pragmaTrees = new Vector<>();
+        Vector<Integer> pragmaIndexes = findPragmas(c_lines);
+        for (int i = 0, j = pragmaIndexes.size() - 1; i <= j; i++, j--) {
+            Node root = new Node("");
+            buildTree(c_lines.get(pragmaIndexes.get(i)), root);
+            buildTree(c_lines.get(pragmaIndexes.get(j)), root);
+            pragmaTrees.add(root);
+        }
+        return pragmaTrees;
+    }
+
+    private Vector<Integer> findPragmas(Vector<String> c_lines) throws Exception {
+        Vector<Integer> pragmaIndexes = new Vector<>();
+        for (int i = 0; i < c_lines.size(); i++) {
+            if (c_lines.get(i).contains("#pragma"))
+                pragmaIndexes.add(i);
+        }
+        if (pragmaIndexes.size() % 2 != 0)
+            throw new Exception("Odd number of pragmas. For each clause must exist a start pragma and an end pragma.");
+        return pragmaIndexes;
+    }
+
+    private void buildTree(String pragma, Node root) throws Exception {
+        Command command = new Command("java", "-cp", "bin", "JJTree.SyntacticAnalyser", pragma);
+        command.setStoreOutput(true);
+        command.run();
+
+        ArrayList<String> lines = command.getOutputStreamLines();
+
+        if (lines.size() >= 2) {
+            if (lines.get(0).startsWith("Encountered") && lines.get(1).startsWith("Was expecting one of:"))
+                throw new Exception("Invalid pragma found: " + pragma);
+        }
 
         int indentation = 0;
         Node lastNewNode = root;
@@ -59,8 +88,6 @@ public class Parser {
 
             indentation = numTabs;
         }
-
-        return root;
     }
 
     private Node addNodeToTree(String info, Node parent) {
