@@ -19,16 +19,14 @@ public class Auto {
         }
 
         // each arg is a filename
-        Parser p = new Parser();
         for (int i = 0; i < args.length; i++) {
             try {
                 System.out.println("\n" + args[i] + ":");
                 FileReader fileReader = new FileReader(args[i]);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
-                ArrayList<String> c_lines = p.parse(bufferedReader);
-                ArrayList<Node> pragmaTrees = p.generateSyntacticAnalysisTrees(c_lines);
-                // for(Node root : pragmaTrees) printTree(root);
-                CodeChanger codeChanger = new CodeChanger(c_lines);
+                Parser parser = new Parser(bufferedReader);
+                // for(Node root : parser.getSyntacticAnalysisTrees()) printTree(root);
+                CodeChanger codeChanger = new CodeChanger(parser.getCodeLines(), parser.getPragmaIndexes());
                 codeChanger.codeVariantsTest();
             } catch (FileNotFoundException e) {
                 System.err.println(e.getMessage());

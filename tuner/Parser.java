@@ -7,16 +7,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
+    private ArrayList<String> codeLines;
+    private ArrayList<Integer> pragmaIndexes;
+    private ArrayList<Node> syntacticAnalysisTrees;
 
-    /**
-     * Creates the parser.
-     *
-     * @param bufferedReader Data from the C file
-     * @return Sequence with all lines
-     * @throws IOException
-     */
-    public ArrayList<String> parse(BufferedReader bufferedReader) throws IOException {
-        return getLines(bufferedReader);
+    public Parser(BufferedReader bufferedReader) throws Exception {
+        this.codeLines = getLines(bufferedReader);
+        this.pragmaIndexes = findPragmas(this.codeLines);
+        this.syntacticAnalysisTrees = generateSyntacticAnalysisTrees(this.codeLines, this.pragmaIndexes);
+    }
+
+    public ArrayList<String> getCodeLines() {
+        return codeLines;
+    }
+
+    public ArrayList<Integer> getPragmaIndexes() {
+        return pragmaIndexes;
+    }
+
+    public ArrayList<Node> getSyntacticAnalysisTrees() {
+        return syntacticAnalysisTrees;
     }
 
     private ArrayList<String> getLines(BufferedReader bufferedReader) throws IOException {
@@ -25,18 +35,6 @@ public class Parser {
         while ((str = bufferedReader.readLine()) != null)
             lines.add(str);
         return lines;
-    }
-
-    public ArrayList<Node> generateSyntacticAnalysisTrees(ArrayList<String> c_lines) throws Exception {
-        ArrayList<Node> pragmaTrees = new ArrayList<>();
-        ArrayList<Integer> pragmaIndexes = findPragmas(c_lines);
-        for (int i = 0, j = pragmaIndexes.size() - 1; i <= j; i++, j--) {
-            Node root = new Node("");
-            buildTree(c_lines.get(pragmaIndexes.get(i)), root);
-            buildTree(c_lines.get(pragmaIndexes.get(j)), root);
-            pragmaTrees.add(root);
-        }
-        return pragmaTrees;
     }
 
     // Comments started by "//" are ignored by the regular expression.
@@ -61,6 +59,17 @@ public class Parser {
         if (pragmaIndexes.size() % 2 != 0)
             throw new Exception("Odd number of pragmas. For each clause must exist a start pragma and an end pragma.");
         return pragmaIndexes;
+    }
+
+    private ArrayList<Node> generateSyntacticAnalysisTrees(ArrayList<String> c_lines, ArrayList<Integer> pragmaIndexes) throws Exception {
+        ArrayList<Node> pragmaTrees = new ArrayList<>();
+        for (int i = 0, j = pragmaIndexes.size() - 1; i <= j; i++, j--) {
+            Node root = new Node("");
+            buildTree(c_lines.get(pragmaIndexes.get(i)), root);
+            buildTree(c_lines.get(pragmaIndexes.get(j)), root);
+            pragmaTrees.add(root);
+        }
+        return pragmaTrees;
     }
 
     private void buildTree(String pragma, Node root) throws Exception {
