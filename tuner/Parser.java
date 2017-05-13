@@ -40,7 +40,7 @@ public class Parser {
     // Comments started by "//" are ignored by the regular expression.
     private ArrayList<Integer> findPragmas(ArrayList<String> codeLines) throws Exception {
         ArrayList<Integer> pragmaIndexes = new ArrayList<>();
-        Pattern pattern = Pattern.compile("[\t ]*#pragma[\t ]+tuner.*");
+        Pattern pattern = Pattern.compile("(?:(?!//).)*#pragma[\t ]+tuner.*");
         boolean ignoreLines = false;
         for (int i = 0; i < codeLines.size(); i++) {
             String line = codeLines.get(i);
@@ -80,7 +80,7 @@ public class Parser {
         ArrayList<String> lines = command.getOutputStreamLines();
 
         if (lines.size() >= 2) {
-            if (lines.get(0).startsWith("Encountered") && lines.get(1).startsWith("Was expecting one of:"))
+            if (lines.get(0).startsWith("Encountered") && lines.get(1).startsWith("Was expecting"))
                 throw new Exception("Invalid pragma found: " + pragma);
         }
 
