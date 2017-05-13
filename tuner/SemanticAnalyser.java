@@ -71,10 +71,12 @@ public class SemanticAnalyser {
 
     }
 
-    private void verifyVariablesValuesOrder(Node root) {
+    private void verifyVariablesValuesOrder(Node root) throws Exception {
         if (root.getInfo().equals("explore")) {
             Node var = root.getChildren().get(0);
             ArrayList<Node> children = var.getChildren();
+            if(children.size() != 2)
+                throw new Exception("The interval indicated in an 'explore' pragma must start and end with different values. The pragma will be ignored.");
             Node child1 = children.get(0);
             Node child2 = children.get(1);
             if (Integer.parseInt(child1.getInfo()) > Integer.parseInt(child2.getInfo())) {
