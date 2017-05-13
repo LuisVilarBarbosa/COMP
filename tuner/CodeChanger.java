@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CodeChanger {
+    private final String testCodeFile = "_TUNER_FILE_WITH_COMPLETE_SOURCE_CODE_TO_TEST.c";
     private ArrayList<String> codeLines;
-    private String testCodeFile = "test.c";
     private ArrayList<Integer> pragmaIndexes;
     private ArrayList<Node> HIRs;
 
