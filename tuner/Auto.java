@@ -26,6 +26,8 @@ public class Auto {
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 Parser parser = new Parser(bufferedReader);
                 // for(Node root : parser.getSyntacticAnalysisTrees()) printTree(root);
+                SemanticAnalyser semanticAnalyser = new SemanticAnalyser(parser.getCodeLines(), parser.getSyntacticAnalysisTrees());
+                // for(Node root : semanticAnalyser.getHIRs()) printTree(root);
                 CodeChanger codeChanger = new CodeChanger(parser.getCodeLines(), parser.getPragmaIndexes());
                 codeChanger.codeVariantsTest();
             } catch (FileNotFoundException e) {
