@@ -3,28 +3,41 @@ package tuner;
 import java.util.ArrayList;
 
 public class SemanticAnalyser {
-    ArrayList<String> codeLines;
-    ArrayList<Node> HIRs;
+    private ArrayList<String> codeLines;
+    private ArrayList<Integer> pragmaIndexes;
+    private ArrayList<Node> HIRs;
 
-    public SemanticAnalyser(ArrayList<String> codeLines, ArrayList<Node> syntacticAnalysisTrees) {
+    public SemanticAnalyser(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes, ArrayList<Node> syntacticAnalysisTrees) {
         this.codeLines = codeLines;
+        this.pragmaIndexes = pragmaIndexes;
         this.HIRs = cleanTrees(syntacticAnalysisTrees);
 
-        for (int i = 0; i < HIRs.size(); i++) {
+        if (this.pragmaIndexes.size() != this.HIRs.size() * 2)
+            throw new Error("A bug has been found in the code.");
+
+        for (int i = 0, j = this.pragmaIndexes.size() - 1; i < this.HIRs.size(); i++, j--) {
             try {
-                verifyVariablesValuesOrder(HIRs.get(i));
-                verifyPragmaInstructionsCompatibility(HIRs.get(i));
-                verifyEqualVarNames(HIRs.get(i));
+                verifyVariablesValuesOrder(this.HIRs.get(i));
+                verifyPragmaInstructionsCompatibility(this.HIRs.get(i));
+                verifyEqualVarNames(this.HIRs.get(i));
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                HIRs.remove(i);
+                this.HIRs.remove(i);
+                // The removal order is very important.
+                this.pragmaIndexes.remove(j);
+                this.pragmaIndexes.remove(i);
                 i--;
+                j++;
             }
         }
     }
 
     public ArrayList<String> getCodeLines() {
         return codeLines;
+    }
+
+    public ArrayList<Integer> getPragmaIndexes() {
+        return pragmaIndexes;
     }
 
     public ArrayList<Node> getHIRs() {
@@ -75,7 +88,7 @@ public class SemanticAnalyser {
         if (root.getInfo().equals("explore")) {
             Node var = root.getChildren().get(0);
             ArrayList<Node> children = var.getChildren();
-            if(children.size() != 2)
+            if (children.size() != 2)
                 throw new Exception("The interval indicated in an 'explore' pragma must start and end with different values. The pragma will be ignored.");
             Node child1 = children.get(0);
             Node child2 = children.get(1);
