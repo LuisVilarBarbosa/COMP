@@ -28,7 +28,7 @@ public class Auto {
                 // for(Node root : parser.getSyntacticAnalysisTrees()) printTree(root);
                 SemanticAnalyser semanticAnalyser = new SemanticAnalyser(parser.getCodeLines(), parser.getSyntacticAnalysisTrees());
                 // for(Node root : semanticAnalyser.getHIRs()) printTree(root);
-                CodeChanger codeChanger = new CodeChanger(parser.getCodeLines(), parser.getPragmaIndexes());
+                CodeChanger codeChanger = new CodeChanger(semanticAnalyser.getCodeLines(), parser.getPragmaIndexes(), semanticAnalyser.getHIRs());
                 codeChanger.codeVariantsTest();
             } catch (FileNotFoundException e) {
                 System.err.println(e.getMessage());

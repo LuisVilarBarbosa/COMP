@@ -8,10 +8,12 @@ public class CodeChanger {
     private ArrayList<String> codeLines;
     private String testCodeFile = "test.c";
     private ArrayList<Integer> pragmaIndexes;
+    private ArrayList<Node> HIRs;
 
-    public CodeChanger(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes) throws Exception {
+    public CodeChanger(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes, ArrayList<Node> HIRs) throws Exception {
         this.codeLines = codeLines;
         this.pragmaIndexes = pragmaIndexes;
+        this.HIRs = HIRs;
     }
 
     /**
