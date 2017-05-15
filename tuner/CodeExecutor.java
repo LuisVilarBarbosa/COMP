@@ -24,9 +24,9 @@ public class CodeExecutor {
 		String fileName = f.getName();
 		int p = fileName.lastIndexOf(".");
 
-		executableName = fileName.substring(0, p).trim();
+		executableName = fileName.substring(0, p).trim() + ".exe";
 
-		if(p == -1 || !executableName.matches("\\w+") || !f.isFile())
+		if(p == -1 || !f.isFile())
 			executableName = "";
 	}
 
@@ -45,7 +45,7 @@ public class CodeExecutor {
 	 * @throws InterruptedException
 	 */
 	public void compile() throws IOException, InterruptedException {
-		Command command = new Command("gcc", "-Wall", "-o" + executableName, filePath);
+		Command command = new Command("gcc", "-Wall", "-Wno-unknown-pragmas", "-o" + executableName, filePath);
 		command.run();
 	}
 
@@ -55,7 +55,7 @@ public class CodeExecutor {
 	 * @throws InterruptedException
 	 */
 	public void exec() throws IOException, InterruptedException {
-		Command command = new Command(executableName + ".exe");
+		Command command = new Command(executableName);
 		command.run();
 	}
 
