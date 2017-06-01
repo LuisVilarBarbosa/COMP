@@ -1,10 +1,20 @@
 package tuner;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class CodeChanger {
+    private static final boolean isWindows = System.getProperty("os.name").contains("Win");
+
+    private static final String templates_folder = "c_template_code/";
+    private static final String includes_global = templates_folder + "includes_global.c";
+    private static final String includes_linux = templates_folder + "includes_linux.c";
+    private static final String includes_windows = templates_folder + "includes_windows.c";
+    private static final String pragma_footer1_windows = templates_folder + "pragma_footer1_windows.c";
+    private static final String pragma_footer2 = templates_folder + "pragma_footer2.c";
+    private static final String pragma_header1_windows = templates_folder + "pragma_header1_windows.c";
+    private static final String pragma_header2 = templates_folder + "pragma_header2.c";
+
     private final String testCodeFile = "_TUNER_FILE_WITH_COMPLETE_SOURCE_CODE_TO_TEST.c";
     private ArrayList<String> codeLines;
     private ArrayList<Integer> pragmaIndexes;
@@ -27,7 +37,7 @@ public class CodeChanger {
         codeExecutor.delete();
     }
 
-    private ArrayList<String> changeCCode() {
+    private ArrayList<String> changeCCode() throws IOException {
         ArrayList<String> codeChanged = codeLines;
 
         for (int i = 0; i < HIRs.size(); i++) {
@@ -44,24 +54,18 @@ public class CodeChanger {
                     ArrayList<Node> varChildren = exploreChildren.get(0).getChildren();
                     String startValue = varChildren.get(0).getInfo();
                     String endValue = varChildren.get(1).getInfo();
-                    String tunerVarName = "_TUNER_VAR_" + varName;
-                    String tunerRepeatVarName = "_TUNER_REPEAT_VAR_" + varName;
 
-                    ArrayList<String> newStartCode = new ArrayList<>();
-                    newStartCode.add("for (float " + tunerVarName + " = " + startValue + "; " + tunerVarName + " < " + endValue + "; " + tunerVarName + "++" + ") {");
-                    newStartCode.add("for (int " + tunerRepeatVarName + " = 1; " + tunerRepeatVarName + " < 5; " + tunerRepeatVarName + "++) {");
-
-                    String time = "1";  // to remove
-                    ArrayList<String> newEndCode = new ArrayList<>();
-                    newEndCode.add("}");
-                    newEndCode.add("printf(\"" + varName + "_%lf_%lf\\n\", " + tunerVarName + ", " + time + " / 5.0" + ");");
-                    newEndCode.add("}");
+                    ArrayList<String> newEndCode = loadScopeEnd();
+                    adjustCode(newEndCode, varName, startValue, endValue);
+                    ArrayList<String> newStartCode = loadScopeBegin();
+                    adjustCode(newStartCode, varName, startValue, endValue);
 
                     codeChanged.addAll(scopeEnd, newEndCode);
                     codeChanged.addAll(scopeBegin, newStartCode);
                 }
             }
         }
+        codeChanged.addAll(0, loadIncludes());
 
         return codeChanged;
     }
@@ -81,6 +85,61 @@ public class CodeChanger {
         codeExecutor.exec();
         long endTime = System.nanoTime();
         return endTime - iniTime;   // nanoseconds
+    }
+
+    private ArrayList<String> loadIncludes() throws IOException {
+        ArrayList<String> includes = new ArrayList<>();
+        includes.addAll(loadFile(includes_global));
+        if (isWindows)
+            includes.addAll(loadFile(includes_windows));
+        else
+            includes.addAll(loadFile(includes_linux));
+        return includes;
+    }
+
+    private ArrayList<String> loadScopeBegin() throws IOException {
+        ArrayList<String> pragmaHeader = new ArrayList<>();
+        if (isWindows)
+            pragmaHeader.addAll(loadFile(pragma_header1_windows));
+        /*else
+            pragmaHeader.addAll(loadFile());*/
+        pragmaHeader.addAll(loadFile(pragma_header2));
+        return pragmaHeader;
+    }
+
+    private ArrayList<String> loadScopeEnd() throws IOException {
+        ArrayList<String> pragmaFooter = new ArrayList<>();
+        if (isWindows)
+            pragmaFooter.addAll(loadFile(pragma_footer1_windows));
+        /*else
+            pragmaFooter.addAll(loadFile());*/
+        pragmaFooter.addAll(loadFile(pragma_footer2));
+        return pragmaFooter;
+    }
+
+    private ArrayList<String> loadFile(String filename) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(filename);
+        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        ArrayList<String> lines = new ArrayList<>();
+        String line;
+        while ((line = bufferedReader.readLine()) != null)
+            lines.add(line);
+        bufferedReader.close();
+        inputStreamReader.close();
+        fileInputStream.close();
+        return lines;
+    }
+
+    private void adjustCode(ArrayList<String> code, String varName, String startValue, String endValue) {
+        for (int i = 0; i < code.size(); i++) {
+            String line = code.get(i);
+            line = line.replaceAll("varType", "double");
+            line = line.replaceAll("varName", varName);
+            line = line.replaceAll("startValue", startValue);
+            line = line.replaceAll("endValue", endValue);
+            code.set(i, line);
+        }
     }
 
 }

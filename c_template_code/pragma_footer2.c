@@ -1,2 +1,2 @@
-	printf("varName_%I64d_%I64d\n", varName, _TUNER_TIME_varName / 5");
+	printf("varName_%lf_%lf\n", varName, _TUNER_TIME_varName / 5.0);
 }
