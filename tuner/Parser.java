@@ -74,7 +74,7 @@ public class Parser {
 
     private void buildTree(String pragma, Node root) throws Exception {
         Command command = new Command("java", "-cp", "bin", "JJTree.SyntacticAnalyser", pragma);
-        command.setStoreOutput(true);
+        command.setStoreOutput();
         command.run();
 
         ArrayList<String> lines = command.getOutputStreamLines();

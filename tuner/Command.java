@@ -7,19 +7,22 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Command {
-    ProcessBuilder processBuilder;
-    boolean storeOutput;    // If storeOutput = true, the output will not be automatically shown.
-    ArrayList<String> errorStreamLines;
-    ArrayList<String> outputStreamLines;
+    private ProcessBuilder processBuilder;
+    /**
+     * If storeOutput = true, the output will not be automatically shown.
+     */
+    private boolean storeOutput;
+    private ArrayList<String> errorStreamLines;
+    private ArrayList<String> outputStreamLines;
 
-    public Command(String... command) {
+    Command(String... command) {
         this.processBuilder = new ProcessBuilder(command);
         this.storeOutput = false;
         this.errorStreamLines = new ArrayList<>();
         this.outputStreamLines = new ArrayList<>();
     }
 
-    public void run() throws IOException, InterruptedException {
+    void run() throws IOException, InterruptedException {
         /* When inheritIO() is called, getErrorStream() and getInputStream() do not return data. */
         if (!this.storeOutput)
             this.processBuilder.inheritIO();
@@ -31,29 +34,26 @@ public class Command {
             InputStream outputStream = process.getInputStream();
             BufferedReader errorStreamReader = new BufferedReader(new InputStreamReader(errorStream));
             BufferedReader outputStreamReader = new BufferedReader(new InputStreamReader(outputStream));
-            String line;
-            while ((line = errorStreamReader.readLine()) != null)
-                errorStreamLines.add(line);
-            while ((line = outputStreamReader.readLine()) != null)
-                outputStreamLines.add(line);
+            String err_line;
+            String out_line = "";
+            while ((err_line = errorStreamReader.readLine()) != null || (out_line = outputStreamReader.readLine()) != null) {
+                errorStreamLines.add(err_line);
+                outputStreamLines.add(out_line);
+            }
         }
 
         process.waitFor();
     }
 
-    public boolean isStoreOutput() {
-        return storeOutput;
-    }
-
-    public void setStoreOutput(boolean storeOutput) {
-        this.storeOutput = storeOutput;
+    void setStoreOutput() {
+        this.storeOutput = true;
     }
 
     public ArrayList<String> getErrorStreamLines() {
         return errorStreamLines;
     }
 
-    public ArrayList<String> getOutputStreamLines() {
+    ArrayList<String> getOutputStreamLines() {
         return outputStreamLines;
     }
 

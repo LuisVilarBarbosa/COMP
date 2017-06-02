@@ -20,21 +20,21 @@ public class CodeChanger {
     private ArrayList<Integer> pragmaIndexes;
     private ArrayList<Node> HIRs;
 
-    public CodeChanger(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes, ArrayList<Node> HIRs) throws Exception {
+    private String varName;
+
+    CodeChanger(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes, ArrayList<Node> HIRs) {
         this.codeLines = codeLines;
         this.pragmaIndexes = pragmaIndexes;
         this.HIRs = HIRs;
     }
 
-
-    public void codeVariantsTest() throws IOException, InterruptedException {
+    void codeVariantsTest() throws IOException, InterruptedException {
         ArrayList<String> codeChanged = changeCCode();
         generateFileWithCode(codeChanged);
         CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
         codeExecutor.compile();
-        long runTime = run(codeExecutor);
-        System.out.println("Running time: " + runTime / Math.pow(10, 6) + " milliseconds");
-        codeExecutor.delete();
+        codeExecutor.exec(varName);
+        //codeExecutor.delete();
     }
 
     private ArrayList<String> changeCCode() throws IOException {
@@ -50,7 +50,7 @@ public class CodeChanger {
                 Node n2 = children.get(1);
                 if (n1.getInfo().equals("explore") && n2.getInfo().equals("max_abs_error")) {
                     ArrayList<Node> exploreChildren = n1.getChildren();
-                    String varName = exploreChildren.get(0).getInfo();
+                    varName = exploreChildren.get(0).getInfo();
                     ArrayList<Node> varChildren = exploreChildren.get(0).getChildren();
                     String startValue = varChildren.get(0).getInfo();
                     String endValue = varChildren.get(1).getInfo();
@@ -78,13 +78,6 @@ public class CodeChanger {
             file.write(endLine);
         }
         file.close();
-    }
-
-    private long run(CodeExecutor codeExecutor) throws IOException, InterruptedException {
-        long iniTime = System.nanoTime();
-        codeExecutor.exec();
-        long endTime = System.nanoTime();
-        return endTime - iniTime;   // nanoseconds
     }
 
     private ArrayList<String> loadIncludes() throws IOException {
