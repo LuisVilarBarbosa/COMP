@@ -8,3 +8,6 @@ JJTree/*
 *.project
 
 *.exe
+
+.idea
+*.iml
