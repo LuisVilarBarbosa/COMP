@@ -51,7 +51,11 @@ class CodeExecutor {
         Command command = new Command("gcc", "-Wall", "-Wno-unknown-pragmas", "-o" + executableName, filePath);
         command.setStoreOutput(true);
         command.run();
-        return command.getErrorStreamLines().isEmpty();
+        ArrayList<String> outputStreamLines = command.getOutputStreamLines();
+        ArrayList<String> errorStreamLines = command.getErrorStreamLines();
+        printStrings(outputStreamLines);
+        printStrings(errorStreamLines);
+        return errorStreamLines.isEmpty();
     }
 
     /**
@@ -114,6 +118,11 @@ class CodeExecutor {
      */
     private void deleteFile() {
         new File(filePath).delete();
+    }
+
+    private void printStrings(ArrayList<String> strings) {
+        for (String str : strings)
+            System.out.println(str);
     }
 
 }
