@@ -44,7 +44,7 @@ public class CodeExecutor {
     /**
      * Compiles the c file located in filePath.
      *
-     * @throws IOException ver run()
+     * @throws IOException          ver run()
      * @throws InterruptedException ver run()
      */
     void compile() throws IOException, InterruptedException {
@@ -56,28 +56,28 @@ public class CodeExecutor {
      * Executa o ficheiro c.
      *
      * @param var Variável que está a ser alterada
-     * @throws IOException ver run()
+     * @throws IOException          ver run()
      * @throws InterruptedException ver run()
      */
     void exec(String var) throws IOException, InterruptedException {
         ArrayList<String> outputMessages;
         String best_execution = null;
-        long best_execution_time = 999999999;
+        double best_execution_time = 999999;
         Command command = new Command(executableName);
 
-        //command.setStoreOutput();
+        command.setStoreOutput();
         command.run();
 
         outputMessages = command.getOutputStreamLines();
         for (String s : outputMessages) {
             String[] temp = s.split("_");
-            if (var.equals(temp[0]) && Long.valueOf(temp[2]) < best_execution_time) {
+            if (var.equals(temp[0]) && Double.compare(Double.parseDouble(temp[2]), best_execution_time) < 0) {
                 best_execution = temp[1];
-                best_execution_time = Long.valueOf(temp[2]);
+                best_execution_time = Double.parseDouble(temp[2]);
             }
         }
 
-        System.out.println(var + ": " + best_execution);
+        System.out.println("Best execution of " + var + ": " + best_execution);
     }
 
     /**
