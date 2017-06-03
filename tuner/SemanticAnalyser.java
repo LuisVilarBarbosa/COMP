@@ -27,7 +27,7 @@ public class SemanticAnalyser {
                 this.pragmaIndexes.remove(j);
                 this.pragmaIndexes.remove(i);
                 i--;
-                j++;
+                j--;    // it has been verified that is ok
             }
         }
     }
