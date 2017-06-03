@@ -10,8 +10,10 @@ public class CodeChanger {
     private static final String includes_global = templates_folder + "includes_global.c";
     private static final String includes_linux = templates_folder + "includes_linux.c";
     private static final String includes_windows = templates_folder + "includes_windows.c";
+    private static final String pragma_footer1_linux = templates_folder + "pragma_footer1_linux.c";
     private static final String pragma_footer1_windows = templates_folder + "pragma_footer1_windows.c";
     private static final String pragma_footer2 = templates_folder + "pragma_footer2.c";
+    private static final String pragma_header1_linux = templates_folder + "pragma_header1_linux.c";
     private static final String pragma_header1_windows = templates_folder + "pragma_header1_windows.c";
     private static final String pragma_header2 = templates_folder + "pragma_header2.c";
 
@@ -96,8 +98,8 @@ public class CodeChanger {
         ArrayList<String> pragmaHeader = new ArrayList<>();
         if (isWindows)
             pragmaHeader.addAll(loadFile(pragma_header1_windows));
-        /*else
-            pragmaHeader.addAll(loadFile());*/
+        else
+            pragmaHeader.addAll(loadFile(pragma_header1_linux));
         pragmaHeader.addAll(loadFile(pragma_header2));
         return pragmaHeader;
     }
@@ -106,8 +108,8 @@ public class CodeChanger {
         ArrayList<String> pragmaFooter = new ArrayList<>();
         if (isWindows)
             pragmaFooter.addAll(loadFile(pragma_footer1_windows));
-        /*else
-            pragmaFooter.addAll(loadFile());*/
+        else
+            pragmaFooter.addAll(loadFile(pragma_footer1_linux));
         pragmaFooter.addAll(loadFile(pragma_footer2));
         return pragmaFooter;
     }
