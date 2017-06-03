@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CodeExecutor {
+class CodeExecutor {
     private String executableName;
     private String filePath;
 
-    public CodeExecutor(String filePath) {
+    CodeExecutor(String filePath) {
         if (!isValid(filePath))
             throw new IllegalArgumentException("Invalid C file path.");
 
@@ -47,7 +47,7 @@ public class CodeExecutor {
      * @throws IOException          ver run()
      * @throws InterruptedException ver run()
      */
-    public boolean compile() throws IOException, InterruptedException {
+    boolean compile() throws IOException, InterruptedException {
         Command command = new Command("gcc", "-Wall", "-Wno-unknown-pragmas", "-o" + executableName, filePath);
         command.setStoreOutput(true);
         command.run();
@@ -55,16 +55,17 @@ public class CodeExecutor {
     }
 
     /**
-     * Executa o ficheiro c.
+     * Executa o ficheiro C.
+     * Guarda o valor da melhor execução de cada pragma.
      *
-     * @param var Variável que está a ser alterada
      * @throws IOException          ver run()
      * @throws InterruptedException ver run()
      */
-    public void exec(String var) throws IOException, InterruptedException {
+    void exec() throws IOException, InterruptedException {
         ArrayList<String> outputMessages;
-        String best_execution = null;
-        double best_execution_time = 999999;
+        ArrayList<String> pragmas = new ArrayList<>();
+        ArrayList<Double> best_pragma_value = new ArrayList<>();
+        ArrayList<Double> best_execution_time = new ArrayList<>();
         Command command = new Command(executableName);
 
         command.setStoreOutput(true);
@@ -73,19 +74,30 @@ public class CodeExecutor {
         outputMessages = command.getOutputStreamLines();
         for (String s : outputMessages) {
             String[] temp = s.split("_");
-            if (var.equals(temp[0]) && Double.compare(Double.parseDouble(temp[2]), best_execution_time) < 0) {
-                best_execution = temp[1];
-                best_execution_time = Double.parseDouble(temp[2]);
+            if (!temp[0].isEmpty() && Character.isLetter(temp[0].charAt(0))) {
+                if (pragmas.contains(temp[0])) {
+                    int index = pragmas.indexOf(temp[0]);
+                    Double new_exec_time = Double.parseDouble(temp[2]);
+                    if (Double.compare(new_exec_time, best_execution_time.get(index)) < 0) {
+                        best_pragma_value.set(index, Double.parseDouble(temp[1]));
+                        best_execution_time.set(index, new_exec_time);
+                    }
+                } else {
+                    pragmas.add(temp[0]);
+                    best_pragma_value.add(Double.parseDouble(temp[1]));
+                    best_execution_time.add(Double.parseDouble(temp[2]));
+                }
             }
         }
 
-        System.out.println("Best execution of " + var + ": " + best_execution);
+        for (int i = 0; i < pragmas.size(); i++)
+            System.out.println("Best execution of " + pragmas.get(i) + ": " + best_pragma_value.get(i));
     }
 
     /**
      * Deletes the Executable and the File.
      */
-    public void delete() {
+    void delete() {
         deleteCompiled();
         deleteFile();
     }

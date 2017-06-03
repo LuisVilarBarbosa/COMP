@@ -3,7 +3,7 @@ package tuner;
 import java.io.*;
 import java.util.ArrayList;
 
-public class CodeChanger {
+class CodeChanger {
     private static final boolean isWindows = System.getProperty("os.name").contains("Win");
 
     private static final String templates_folder = "c_template_code/";
@@ -20,8 +20,6 @@ public class CodeChanger {
     private ArrayList<Integer> pragmaIndexes;
     private ArrayList<Node> HIRs;
 
-    private String varName;
-
     CodeChanger(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes, ArrayList<Node> HIRs) {
         this.codeLines = codeLines;
         this.pragmaIndexes = pragmaIndexes;
@@ -33,7 +31,7 @@ public class CodeChanger {
         generateFileWithCode(codeChanged);
         CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
         if (codeExecutor.compile())
-            codeExecutor.exec(varName);
+            codeExecutor.exec();
         else
             System.out.println("It was not possible to compile the generated file. Verify if your code has any bugs.");
         codeExecutor.delete();
@@ -52,7 +50,7 @@ public class CodeChanger {
                 Node n2 = children.get(1);
                 if (n1.getInfo().equals("explore") && n2.getInfo().equals("max_abs_error")) {
                     ArrayList<Node> exploreChildren = n1.getChildren();
-                    varName = exploreChildren.get(0).getInfo();
+                    String varName = exploreChildren.get(0).getInfo();
                     ArrayList<Node> varChildren = exploreChildren.get(0).getChildren();
                     String startValue = varChildren.get(0).getInfo();
                     String endValue = varChildren.get(1).getInfo();
