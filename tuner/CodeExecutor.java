@@ -8,7 +8,7 @@ public class CodeExecutor {
     private String executableName;
     private String filePath;
 
-    CodeExecutor(String filePath) {
+    public CodeExecutor(String filePath) {
         if (!isValid(filePath))
             throw new IllegalArgumentException("Invalid C file path.");
 
@@ -47,10 +47,11 @@ public class CodeExecutor {
      * @throws IOException ver run()
      * @throws InterruptedException ver run()
      */
-    void compile() throws IOException, InterruptedException {
+    public boolean compile() throws IOException, InterruptedException {
         Command command = new Command("gcc", "-Wall", "-Wno-unknown-pragmas", "-o" + executableName, filePath);
         command.setStoreOutput(true);
         command.run();
+        return command.getErrorStreamLines().isEmpty();
     }
 
     /**
@@ -60,7 +61,7 @@ public class CodeExecutor {
      * @throws IOException ver run()
      * @throws InterruptedException ver run()
      */
-    void exec(String var) throws IOException, InterruptedException {
+    public void exec(String var) throws IOException, InterruptedException {
         ArrayList<String> outputMessages;
         String best_execution = null;
         long best_execution_time = 999999999;

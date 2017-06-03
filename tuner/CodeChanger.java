@@ -32,9 +32,11 @@ public class CodeChanger {
         ArrayList<String> codeChanged = changeCCode();
         generateFileWithCode(codeChanged);
         CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
-        codeExecutor.compile();
-        codeExecutor.exec(varName);
-        //codeExecutor.delete();
+        if (codeExecutor.compile())
+            codeExecutor.exec(varName);
+        else
+            System.out.println("It was not possible to compile the generated file. Verify if your code has any bugs.");
+        codeExecutor.delete();
     }
 
     private ArrayList<String> changeCCode() throws IOException {
