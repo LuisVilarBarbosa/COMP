@@ -67,7 +67,7 @@ public class CodeExecutor {
         double best_execution_time = 999999;
         Command command = new Command(executableName);
 
-        command.setStoreOutput();
+        command.setStoreOutput(true);
         command.run();
 
         outputMessages = command.getOutputStreamLines();
