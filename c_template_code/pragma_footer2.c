@@ -1,2 +1,2 @@
-	printf("\nvarName_%lf_%lf\n", varName, _TUNER_TIME_varName / 5.0);
+	printf("\nexploreVarName_%lf_%lf_%lf\n", (double)exploreVarName, _TUNER_TIME_exploreVarName / 5.0, (double)max_abs_errorVarName);
 }

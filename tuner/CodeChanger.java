@@ -52,15 +52,19 @@ class CodeChanger {
                 Node n2 = children.get(1);
                 if (n1.getInfo().equals("explore") && n2.getInfo().equals("max_abs_error")) {
                     ArrayList<Node> exploreChildren = n1.getChildren();
-                    String varName = exploreChildren.get(0).getInfo();
+                    String exploreVarName = exploreChildren.get(0).getInfo();
                     ArrayList<Node> varChildren = exploreChildren.get(0).getChildren();
                     String startValue = varChildren.get(0).getInfo();
                     String endValue = varChildren.get(1).getInfo();
 
+                    ArrayList<Node> max_abs_errorChildren = n2.getChildren();
+                    String max_abs_errorVarName = max_abs_errorChildren.get(0).getInfo();
+                    //String max_abs_errorValue = max_abs_errorChildren.get(1).getInfo();
+
                     ArrayList<String> newEndCode = loadScopeEnd();
-                    adjustCode(newEndCode, varName, startValue, endValue);
+                    adjustCode(newEndCode, exploreVarName, startValue, endValue, max_abs_errorVarName);
                     ArrayList<String> newStartCode = loadScopeBegin();
-                    adjustCode(newStartCode, varName, startValue, endValue);
+                    adjustCode(newStartCode, exploreVarName, startValue, endValue, max_abs_errorVarName);
 
                     codeChanged.addAll(scopeEnd, newEndCode);
                     codeChanged.addAll(scopeBegin, newStartCode);
@@ -126,13 +130,14 @@ class CodeChanger {
         return lines;
     }
 
-    private void adjustCode(ArrayList<String> code, String varName, String startValue, String endValue) {
+    private void adjustCode(ArrayList<String> code, String exploreVarName, String startValue, String endValue, String max_abs_errorVarName) {
         for (int i = 0; i < code.size(); i++) {
             String line = code.get(i);
             line = line.replaceAll("varType", "double");
-            line = line.replaceAll("varName", varName);
+            line = line.replaceAll("exploreVarName", exploreVarName);
             line = line.replaceAll("startValue", startValue);
             line = line.replaceAll("endValue", endValue);
+            line = line.replaceAll("max_abs_errorVarName", max_abs_errorVarName);
             code.set(i, line);
         }
     }

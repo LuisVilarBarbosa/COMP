@@ -1,4 +1,4 @@
 	}
 
-	QueryPerformanceCounter(&_TUNER_END_varName);
-	_TUNER_TIME_varName = (_TUNER_END_varName.QuadPart - _TUNER_START_varName.QuadPart) * (long long)pow(10,9) / _TUNER_FREQUENCY_varName.QuadPart;
+	QueryPerformanceCounter(&_TUNER_END_exploreVarName);
+	_TUNER_TIME_exploreVarName = (_TUNER_END_exploreVarName.QuadPart - _TUNER_START_exploreVarName.QuadPart) * (long long)pow(10,9) / _TUNER_FREQUENCY_exploreVarName.QuadPart;

@@ -2,7 +2,7 @@
 
 // pragmas inside this function are commented because Auto is not ready to read pragmas by function
 void function() {
-	int i, acc = 0;
+	int i, VAR, acc = 0;
 	// #pragma tuner explore VAR(1,10) reference(VAR=1)
 	for (i = VAR; i < 10; i++)
 		acc += VAR;

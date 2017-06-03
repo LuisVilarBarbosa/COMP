@@ -1,9 +1,8 @@
-varType varName;
-for (varName = startValue; varName < endValue; varName++) {
-	LARGE_INTEGER _TUNER_FREQUENCY_varName;
-	LARGE_INTEGER _TUNER_START_varName;
-	LARGE_INTEGER _TUNER_END_varName;
-	long long _TUNER_TIME_varName;
+for (exploreVarName = startValue; exploreVarName < endValue; exploreVarName++) {
+	LARGE_INTEGER _TUNER_FREQUENCY_exploreVarName;
+	LARGE_INTEGER _TUNER_START_exploreVarName;
+	LARGE_INTEGER _TUNER_END_exploreVarName;
+	long long _TUNER_TIME_exploreVarName;
 
-	QueryPerformanceFrequency(&_TUNER_FREQUENCY_varName);
-	QueryPerformanceCounter(&_TUNER_START_varName);
+	QueryPerformanceFrequency(&_TUNER_FREQUENCY_exploreVarName);
+	QueryPerformanceCounter(&_TUNER_START_exploreVarName);
