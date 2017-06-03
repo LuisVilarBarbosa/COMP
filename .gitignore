@@ -8,6 +8,8 @@ JJTree/*
 *.project
 
 *.exe
+*.out
+_TUNER_FILE_WITH_COMPLETE_SOURCE_CODE_TO_TEST.c
 
 .idea
 *.iml
