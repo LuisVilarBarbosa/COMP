@@ -72,12 +72,6 @@ public class SemanticAnalyser {
         return newRoot;
     }
 
-    private void verifyVariablesExistence() {
-        //foreach var do outside her scope
-        /*if(codeLines.get(i).indexOf(var) != -1)
-            throw new Exception("'"var + "' found outside her scope on line " +  (i + 1));*/
-    }
-
     private void verifyPragmaDataTypes() {
 
     }
