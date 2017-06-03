@@ -19,12 +19,12 @@ class CodeChanger {
 
     private final String testCodeFile = "_TUNER_FILE_WITH_COMPLETE_SOURCE_CODE_TO_TEST.c";
     private ArrayList<String> codeLines;
-    private ArrayList<Integer> pragmaIndexes;
+    private ArrayList<PragmaScope> pragmaScopes;
     private ArrayList<Node> HIRs;
 
-    CodeChanger(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes, ArrayList<Node> HIRs) {
+    CodeChanger(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<Node> HIRs) {
         this.codeLines = codeLines;
-        this.pragmaIndexes = pragmaIndexes;
+        this.pragmaScopes = pragmaScopes;
         this.HIRs = HIRs;
     }
 
@@ -43,8 +43,8 @@ class CodeChanger {
         ArrayList<String> codeChanged = codeLines;
 
         for (int i = 0; i < HIRs.size(); i++) {
-            int scopeBegin = pragmaIndexes.get(i) + 1;
-            int scopeEnd = pragmaIndexes.get(pragmaIndexes.size() - 1 - i);
+            int scopeBegin = pragmaScopes.get(i).getStartIndex() + 1;
+            int scopeEnd = pragmaScopes.get(i).getEndIndex();
             ArrayList<Node> children = HIRs.get(i).getChildren();
 
             if (children.size() >= 2) {

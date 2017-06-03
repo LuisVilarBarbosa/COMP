@@ -8,21 +8,21 @@ import java.util.regex.Pattern;
 
 public class Parser {
     private ArrayList<String> codeLines;
-    private ArrayList<Integer> pragmaIndexes;
+    private ArrayList<PragmaScope> pragmaScopes;
     private ArrayList<Node> syntacticAnalysisTrees;
 
     public Parser(BufferedReader bufferedReader) throws Exception {
         this.codeLines = getLines(bufferedReader);
-        this.pragmaIndexes = findPragmas(this.codeLines);
-        this.syntacticAnalysisTrees = generateSyntacticAnalysisTrees(this.codeLines, this.pragmaIndexes);
+        this.pragmaScopes = findPragmasByFunction(this.codeLines);
+        this.syntacticAnalysisTrees = generateSyntacticAnalysisTrees(this.codeLines, this.pragmaScopes);
     }
 
     public ArrayList<String> getCodeLines() {
         return codeLines;
     }
 
-    public ArrayList<Integer> getPragmaIndexes() {
-        return pragmaIndexes;
+    public ArrayList<PragmaScope> getPragmaScopes() {
+        return pragmaScopes;
     }
 
     public ArrayList<Node> getSyntacticAnalysisTrees() {
@@ -37,12 +37,63 @@ public class Parser {
         return lines;
     }
 
+    private ArrayList<PragmaScope> findPragmasByFunction(ArrayList<String> codeLines) throws Exception {
+        ArrayList<Integer> indexes = new ArrayList<>();
+
+        int indentation = 0;
+        boolean ignoreLines = false;
+        for (int i = 0; i < codeLines.size(); i++) {
+            String line = codeLines.get(i);
+            if (ignoreLines) {
+                if (line.contains("*/")) {
+                    ignoreLines = false;
+                    line = line.replaceAll(".*\\*/", "");
+                } else
+                    continue;
+            } else {
+                if (line.contains("/*")) {
+                    ignoreLines = true;
+                    line = line.replaceAll("/\\*.*", "");
+                }
+            }
+
+            for (int j = 0; j < line.length(); j++) {
+                switch (line.charAt(j)) {
+                    case '{':
+                        if (indentation == 0)
+                            indexes.add(i);
+                        indentation++;
+                        break;
+                    case '}':
+                        indentation--;
+                        if (indentation == 0)
+                            indexes.add(i);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        ArrayList<PragmaScope> pragmaScopes = new ArrayList<>();
+        for (int i = 1; i < indexes.size(); i += 2) {
+            ArrayList<Integer> pragmaIndexes = findPragmas(codeLines, indexes.get(i - 1), indexes.get(i));
+            for (int j = 0, k = pragmaIndexes.size() - 1; j <= k; j++, k--)
+                pragmaScopes.add(new PragmaScope(pragmaIndexes.get(j), pragmaIndexes.get(k)));
+        }
+
+        return pragmaScopes;
+    }
+
+
     // Comments started by "//" are ignored by the regular expression.
-    private ArrayList<Integer> findPragmas(ArrayList<String> codeLines) throws Exception {
+    private ArrayList<Integer> findPragmas(ArrayList<String> codeLines, int startIndex, int endIndex) throws Exception {
+        if (endIndex >= codeLines.size())
+            throw new Error("'endIndex' equal to or greater than codeLines.size()");
         ArrayList<Integer> pragmaIndexes = new ArrayList<>();
         Pattern pattern = Pattern.compile("(?:(?!//).)*#pragma[\t ]+tuner.*");
         boolean ignoreLines = false;
-        for (int i = 0; i < codeLines.size(); i++) {
+        for (int i = startIndex; i < endIndex; i++) {
             String line = codeLines.get(i);
             if (ignoreLines) {
                 // Cannot exist an uncommented pragma.
@@ -61,12 +112,14 @@ public class Parser {
         return pragmaIndexes;
     }
 
-    private ArrayList<Node> generateSyntacticAnalysisTrees(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes) throws Exception {
+
+    private ArrayList<Node> generateSyntacticAnalysisTrees(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes) throws Exception {
         ArrayList<Node> pragmaTrees = new ArrayList<>();
-        for (int i = 0, j = pragmaIndexes.size() - 1; i <= j; i++, j--) {
+        for (int i = 0; i < pragmaScopes.size(); i++) {
+            PragmaScope pragmaScope = pragmaScopes.get(i);
             Node root = new Node("");
-            buildTree(codeLines.get(pragmaIndexes.get(i)), root);
-            buildTree(codeLines.get(pragmaIndexes.get(j)), root);
+            buildTree(codeLines.get(pragmaScope.getStartIndex()), root);
+            buildTree(codeLines.get(pragmaScope.getEndIndex()), root);
             pragmaTrees.add(root);
         }
         return pragmaTrees;

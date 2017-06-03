@@ -4,18 +4,18 @@ import java.util.ArrayList;
 
 public class SemanticAnalyser {
     private ArrayList<String> codeLines;
-    private ArrayList<Integer> pragmaIndexes;
+    private ArrayList<PragmaScope> pragmaScopes;
     private ArrayList<Node> HIRs;
 
-    public SemanticAnalyser(ArrayList<String> codeLines, ArrayList<Integer> pragmaIndexes, ArrayList<Node> syntacticAnalysisTrees) {
+    public SemanticAnalyser(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<Node> syntacticAnalysisTrees) {
         this.codeLines = codeLines;
-        this.pragmaIndexes = pragmaIndexes;
+        this.pragmaScopes = pragmaScopes;
         this.HIRs = cleanTrees(syntacticAnalysisTrees);
 
-        if (this.pragmaIndexes.size() != this.HIRs.size() * 2)
+        if (this.pragmaScopes.size() != this.HIRs.size())
             throw new Error("A bug has been found in the code.");
 
-        for (int i = 0, j = this.pragmaIndexes.size() - 1; i < this.HIRs.size(); i++, j--) {
+        for (int i = 0; i < this.HIRs.size(); i++) {
             try {
                 verifyVariablesValuesOrder(this.HIRs.get(i));
                 verifyPragmaInstructionsCompatibility(this.HIRs.get(i));
@@ -24,10 +24,8 @@ public class SemanticAnalyser {
                 System.out.println(e.getMessage());
                 this.HIRs.remove(i);
                 // The removal order is very important.
-                this.pragmaIndexes.remove(j);
-                this.pragmaIndexes.remove(i);
+                this.pragmaScopes.remove(i);
                 i--;
-                j--;    // it has been verified that is ok
             }
         }
     }
@@ -36,8 +34,8 @@ public class SemanticAnalyser {
         return codeLines;
     }
 
-    public ArrayList<Integer> getPragmaIndexes() {
-        return pragmaIndexes;
+    public ArrayList<PragmaScope> getPragmaScopes() {
+        return pragmaScopes;
     }
 
     public ArrayList<Node> getHIRs() {
