@@ -15,14 +15,14 @@ public class Command {
     private ArrayList<String> errorStreamLines;
     private ArrayList<String> outputStreamLines;
 
-    Command(String... command) {
+    public Command(String... command) {
         this.processBuilder = new ProcessBuilder(command);
         this.storeOutput = false;
         this.errorStreamLines = new ArrayList<>();
         this.outputStreamLines = new ArrayList<>();
     }
 
-    void run() throws IOException, InterruptedException {
+    public void run() throws IOException, InterruptedException {
         /* When inheritIO() is called, getErrorStream() and getInputStream() do not return data. */
         if (!this.storeOutput)
             this.processBuilder.inheritIO();
@@ -34,26 +34,29 @@ public class Command {
             InputStream outputStream = process.getInputStream();
             BufferedReader errorStreamReader = new BufferedReader(new InputStreamReader(errorStream));
             BufferedReader outputStreamReader = new BufferedReader(new InputStreamReader(outputStream));
-            String err_line;
-            String out_line = "";
-            while ((err_line = errorStreamReader.readLine()) != null || (out_line = outputStreamReader.readLine()) != null) {
-                errorStreamLines.add(err_line);
-                outputStreamLines.add(out_line);
-            }
+            String line;
+            while ((line = errorStreamReader.readLine()) != null)
+                errorStreamLines.add(line);
+            while ((line = outputStreamReader.readLine()) != null)
+                outputStreamLines.add(line);
         }
 
         process.waitFor();
     }
 
-    void setStoreOutput() {
-        this.storeOutput = true;
+    public boolean isStoreOutput() {
+        return storeOutput;
+    }
+
+    public void setStoreOutput(boolean storeOutput) {
+        this.storeOutput = storeOutput;
     }
 
     public ArrayList<String> getErrorStreamLines() {
         return errorStreamLines;
     }
 
-    ArrayList<String> getOutputStreamLines() {
+    public ArrayList<String> getOutputStreamLines() {
         return outputStreamLines;
     }
 
