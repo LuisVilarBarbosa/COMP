@@ -1,9 +1,7 @@
 package tuner;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Auto {
@@ -30,14 +28,8 @@ public class Auto {
                 // for(Node root : semanticAnalyser.getHIRs()) printTree(root);
                 CodeChanger codeChanger = new CodeChanger(semanticAnalyser.getCodeLines(), semanticAnalyser.getPragmaIndexes(), semanticAnalyser.getHIRs());
                 codeChanger.codeVariantsTest();
-            } catch (FileNotFoundException e) {
-                System.err.println(e.getMessage());
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-            } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
             } catch (Exception e) {
-                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -55,8 +47,8 @@ public class Auto {
     }
 
     private static void printStrings(ArrayList<String> tokens) {
-        for (int i = 0; i < tokens.size(); i++)
-            System.out.println(tokens.get(i));
+        for (String token : tokens)
+            System.out.println(token);
     }
 
     private static void printTree(Node root) {
