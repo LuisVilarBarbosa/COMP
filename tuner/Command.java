@@ -35,10 +35,10 @@ public class Command {
             BufferedReader errorStreamReader = new BufferedReader(new InputStreamReader(errorStream));
             BufferedReader outputStreamReader = new BufferedReader(new InputStreamReader(outputStream));
             String line;
-            while ((line = errorStreamReader.readLine()) != null)
-                errorStreamLines.add(line);
             while ((line = outputStreamReader.readLine()) != null)
                 outputStreamLines.add(line);
+            while ((line = errorStreamReader.readLine()) != null)
+                errorStreamLines.add(line);
         }
 
         process.waitFor();
