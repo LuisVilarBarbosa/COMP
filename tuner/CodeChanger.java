@@ -2,6 +2,8 @@ package tuner;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 class CodeChanger {
     private static final boolean isWindows = System.getProperty("os.name").contains("Win");
@@ -40,7 +42,7 @@ class CodeChanger {
     }
 
     private ArrayList<String> changeCCode() throws IOException {
-        ArrayList<String> codeChanged = codeLines;
+        HashMap<Integer, ArrayList<String>> codeToAddByIndex = new HashMap<>();
 
         for (int i = 0; i < HIRs.size(); i++) {
             int scopeBegin = pragmaScopes.get(i).getStartIndex() + 1;
@@ -66,12 +68,20 @@ class CodeChanger {
                     ArrayList<String> newStartCode = loadScopeBegin();
                     adjustCode(newStartCode, exploreVarName, startValue, endValue, max_abs_errorVarName);
 
-                    codeChanged.addAll(scopeEnd, newEndCode);
-                    codeChanged.addAll(scopeBegin, newStartCode);
+                    codeToAddByIndex.put(scopeEnd, newEndCode);
+                    codeToAddByIndex.put(scopeBegin, newStartCode);
                 }
             }
         }
-        codeChanged.addAll(0, loadIncludes());
+        codeToAddByIndex.put(0, loadIncludes());
+
+        ArrayList<String> codeChanged = codeLines;
+        ArrayList<Integer> keys = new ArrayList<>(codeToAddByIndex.keySet());
+        Collections.sort(keys);
+        for (int i = keys.size() - 1; i >= 0; i--) {
+            int index = keys.get(i);
+            codeChanged.addAll(index, codeToAddByIndex.get(index));
+        }
 
         return codeChanged;
     }
