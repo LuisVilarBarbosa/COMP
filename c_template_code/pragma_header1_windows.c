@@ -1,4 +1,5 @@
-for (varType varName = startValue; varName < endValue; varName++) {
+varType varName;
+for (varName = startValue; varName < endValue; varName++) {
 	LARGE_INTEGER _TUNER_FREQUENCY_varName;
 	LARGE_INTEGER _TUNER_START_varName;
 	LARGE_INTEGER _TUNER_END_varName;
