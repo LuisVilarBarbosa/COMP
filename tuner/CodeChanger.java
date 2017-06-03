@@ -35,7 +35,7 @@ class CodeChanger {
         if (codeExecutor.compile())
             codeExecutor.exec();
         else
-            System.out.println("It was not possible to compile the generated file. Verify if your code has any bugs.");
+            System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
         codeExecutor.delete();
     }
 
