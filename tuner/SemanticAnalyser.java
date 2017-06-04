@@ -24,13 +24,6 @@ public class SemanticAnalyser {
                 verifyPragmaInstructionsCompatibility(this.HIRs.get(i));
                 verifyEqualVarNames(this.HIRs.get(i));
             }
-            catch(NumberFormatException e) {
-                System.out.println("Pragma data types are incompatible.");
-                this.HIRs.remove(i);
-                // The removal order is very important.
-                this.pragmaScopes.remove(i);
-                i--;
-            }
             catch (Exception e) {
                 System.out.println(e.getMessage());
                 this.HIRs.remove(i);
@@ -83,7 +76,7 @@ public class SemanticAnalyser {
         return newRoot;
     }
 
-    private void verifyPragmaDataTypes(Node root) throws NumberFormatException {
+    private void verifyPragmaDataTypes(Node root) throws Exception {
         final String nonDecimals = "\\d+";
         final String decimals = "\\d+\\.\\d+";
         final Pattern pattern, pattern2;
@@ -112,8 +105,8 @@ public class SemanticAnalyser {
                             matcher5 = pattern2.matcher(val2);
                             matcher6 = pattern2.matcher(val3);
                             //System.out.println(matcher4.matches() + " " + matcher5.matches() + " " + matcher6.matches());
-                            if(!(matcher4.matches() && !matcher5.matches() && !matcher6.matches()))
-                                throw new NumberFormatException();
+                            if(!(matcher4.matches() && matcher5.matches() && matcher6.matches()))
+                                throw new Exception("Pragma data types are incompatible.");
                         }
                     }
                 }
