@@ -28,7 +28,7 @@ class Pragma {
         this.startValue = startValue;
         this.endValue = endValue;
         this.max_abs_errorVarName = max_abs_errorVarName;
-        this.max_abs_error = Double.parseDouble(max_abs_error) * 1000;
+        this.max_abs_error = Double.parseDouble(max_abs_error);
         this.referenceExecution = Double.parseDouble(referenceExecution);
     }
 
