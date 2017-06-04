@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Objects;
 
 class CodeChanger {
     private static final boolean isWindows = System.getProperty("os.name").contains("Win");
@@ -66,17 +65,10 @@ class CodeChanger {
                     String max_abs_errorVarName = max_abs_errorChildren.get(0).getInfo();
                     String max_abs_errorValue = max_abs_errorChildren.get(1).getInfo();
 
-                    Pragma p = new Pragma(exploreVarName, startValue, endValue, max_abs_errorVarName, max_abs_errorValue);
+                    ArrayList<Node> referenceChildren = exploreChildren.get(1).getChildren();
+                    String referenceExecution = referenceChildren.get(1).getInfo();
 
-                    if (exploreChildren.size() > 1) {
-                        ArrayList<Node> referenceChildren = exploreChildren.get(1).getChildren();
-                        String refereceVarName = referenceChildren.get(0).getInfo();
-                        if (Objects.equals(refereceVarName, exploreVarName)) {
-                            String referenceExecution = referenceChildren.get(1).getInfo();
-                            p = new Pragma(exploreVarName, startValue, endValue, max_abs_errorVarName, max_abs_errorValue, referenceExecution);
-                        }
-                    }
-
+                    Pragma p = new Pragma(exploreVarName, startValue, endValue, max_abs_errorVarName, max_abs_errorValue, referenceExecution);
                     all_pragmas.add(p);
 
                     ArrayList<String> newEndCode = loadScopeEnd();

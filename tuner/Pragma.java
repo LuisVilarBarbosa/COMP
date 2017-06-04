@@ -14,15 +14,16 @@ class Pragma {
     Double bestExecutionTime;
 
     /**
-     * Pragma constructor.
+     * Pragma constructor with a reference value.
      *
-     * @param varName Pragma name
-     * @param startValue Pragma initial value
-     * @param endValue Pragma final value
+     * @param varName              Pragma name
+     * @param startValue           Pragma initial value
+     * @param endValue             Pragma final value
      * @param max_abs_errorVarName Error variable
-     * @param max_abs_error Error value
+     * @param max_abs_error        Error value
+     * @param referenceExecution   Pragma n execution
      */
-    Pragma(String varName, String startValue, String endValue, String max_abs_errorVarName, String max_abs_error) {
+    Pragma(String varName, String startValue, String endValue, String max_abs_errorVarName, String max_abs_error, String referenceExecution) {
         this.varName = varName;
         this.startValue = startValue;
         this.endValue = endValue;
@@ -30,15 +31,6 @@ class Pragma {
         this.max_abs_error = Double.parseDouble(max_abs_error);
         this.bestExecutionTime = 9999999d;
         this.referenceValue = 9999999d;
-    }
-
-    /**
-     * Pragma constructor with a reference value.
-     *
-     * @param referenceExecution Pragma n execution
-     */
-    Pragma(String varName, String startValue, String endValue, String max_abs_errorVarName, String max_abs_error, String referenceExecution) {
-        this(varName, startValue, endValue, max_abs_errorVarName, max_abs_error);
         this.referenceExecution = Double.parseDouble(referenceExecution);
     }
 
@@ -46,7 +38,7 @@ class Pragma {
      * Checks if execution time is abs(execution - referenceValue) <= max_abs_error.
      * If true stores the value.
      *
-     * @param execution Pragma n execution
+     * @param execution      Pragma n execution
      * @param execution_time Pragma execution time
      */
     void validTime(String execution, Double execution_time) {
