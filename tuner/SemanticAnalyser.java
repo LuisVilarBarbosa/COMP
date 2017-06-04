@@ -1,6 +1,8 @@
 package tuner;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SemanticAnalyser {
     private ArrayList<String> codeLines;
@@ -17,10 +19,19 @@ public class SemanticAnalyser {
 
         for (int i = 0; i < this.HIRs.size(); i++) {
             try {
+                verifyPragmaDataTypes(this.HIRs.get(i));
                 verifyVariablesValuesOrder(this.HIRs.get(i));
                 verifyPragmaInstructionsCompatibility(this.HIRs.get(i));
                 verifyEqualVarNames(this.HIRs.get(i));
-            } catch (Exception e) {
+            }
+            catch(NumberFormatException e) {
+                System.out.println("Pragma data types are incompatible.");
+                this.HIRs.remove(i);
+                // The removal order is very important.
+                this.pragmaScopes.remove(i);
+                i--;
+            }
+            catch (Exception e) {
                 System.out.println(e.getMessage());
                 this.HIRs.remove(i);
                 // The removal order is very important.
@@ -72,8 +83,42 @@ public class SemanticAnalyser {
         return newRoot;
     }
 
-    private void verifyPragmaDataTypes() {
+    private void verifyPragmaDataTypes(Node root) throws NumberFormatException {
+        final String nonDecimals = "\\d+";
+        final String decimals = "\\d+\\.\\d+";
+        final Pattern pattern, pattern2;
+        final Matcher matcher, matcher2, matcher3, matcher4, matcher5, matcher6;
 
+        if(root.getChildren().size() > 0) {
+            Node var = root.getChildren().get(0);
+            ArrayList<Node> children = var.getChildren();
+            if(children.size() == 2) {
+                Node child1 = children.get(0);
+                Node child2 = children.get(1);
+                if(child1.getChildren().size() > 0) {
+                    String val1 = child1.getChildren().get(0).getInfo();
+                    String val2 = child1.getChildren().get(1).getInfo();
+                    if(child2.getChildren().size() > 1) {
+                        String val3 = child2.getChildren().get(1).getInfo();
+
+                        pattern = Pattern.compile(nonDecimals);
+                        matcher = pattern.matcher(val1);
+                        matcher2 = pattern.matcher(val2);
+                        matcher3 = pattern.matcher(val3);
+                        //System.out.println(matcher.matches() + " " + matcher2.matches() + " " + matcher3.matches());
+                        if(!(matcher.matches() && matcher2.matches() && matcher3.matches())) {
+                            pattern2 = Pattern.compile(decimals);
+                            matcher4 = pattern2.matcher(val1);
+                            matcher5 = pattern2.matcher(val2);
+                            matcher6 = pattern2.matcher(val3);
+                            //System.out.println(matcher4.matches() + " " + matcher5.matches() + " " + matcher6.matches());
+                            if(!(matcher4.matches() && !matcher5.matches() && !matcher6.matches()))
+                                throw new NumberFormatException();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void verifyVariablesValuesOrder(Node root) throws Exception {
