@@ -84,7 +84,7 @@ class CodeExecutor {
         }
 
         for (Pragma p : all_pragmas)
-            System.out.println("Best execution of " + p.varName + ": " + p.best_execution);
+            System.out.println("Best execution of " + p.varName + ": " + p.bestExecution + " ///// " + p.referenceValue);
     }
 
     /**
@@ -122,12 +122,24 @@ class CodeExecutor {
     private void checkBetterExecution(String[] message) {
         Pragma p = getPragma(message[0]);
         if (p != null) {
+            setReferenceValue(p, message);
             Double new_exec_time = Double.parseDouble(message[2]);
-            if (Double.compare(new_exec_time, p.best_execution_time) < 0) {
-                p.best_execution = Double.parseDouble(message[1]);
-                p.best_execution_time = new_exec_time;
+            if (Double.compare(new_exec_time, p.bestExecutionTime) < 0) {
+                p.validTime(message[1], new_exec_time);
             }
         }
+    }
+
+    /**
+     * Defines the reference value of a pragma execution time.
+     *
+     * @param p       Pragma to change
+     * @param message String array with var name, var execution, and var execution time
+     */
+    private void setReferenceValue(Pragma p, String[] message) {
+        Double referenceExecution = Double.parseDouble(message[1]);
+        if (Objects.equals(p.referenceExecution, referenceExecution))
+            p.referenceValue = Double.parseDouble(message[2]);
     }
 
     /**

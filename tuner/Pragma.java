@@ -1,21 +1,58 @@
 package tuner;
 
-public class Pragma {
-    public String varName;
-    public String startValue;
-    public String endValue;
-    public String max_abs_errorVarName;
-    public String max_abs_error;
+class Pragma {
+    String varName;
+    String startValue;
+    String endValue;
+    String max_abs_errorVarName;
+    private Double max_abs_error;
 
-    public Double best_execution;
-    public Double best_execution_time;
+    Double referenceExecution;
+    Double referenceValue;
 
-    public Pragma(String varName, String startValue, String endValue, String max_abs_errorVarName, String max_abs_error) {
+    String bestExecution;
+    Double bestExecutionTime;
+
+    /**
+     * Pragma constructor.
+     *
+     * @param varName Pragma name
+     * @param startValue Pragma initial value
+     * @param endValue Pragma final value
+     * @param max_abs_errorVarName Error variable
+     * @param max_abs_error Error value
+     */
+    Pragma(String varName, String startValue, String endValue, String max_abs_errorVarName, String max_abs_error) {
         this.varName = varName;
         this.startValue = startValue;
         this.endValue = endValue;
         this.max_abs_errorVarName = max_abs_errorVarName;
-        this.max_abs_error = max_abs_error;
-        this.best_execution_time = 9999999d;
+        this.max_abs_error = Double.parseDouble(max_abs_error);
+        this.bestExecutionTime = 9999999d;
+        this.referenceValue = 9999999d;
+    }
+
+    /**
+     * Pragma constructor with a reference value.
+     *
+     * @param referenceExecution Pragma n execution
+     */
+    Pragma(String varName, String startValue, String endValue, String max_abs_errorVarName, String max_abs_error, String referenceExecution) {
+        this(varName, startValue, endValue, max_abs_errorVarName, max_abs_error);
+        this.referenceExecution = Double.parseDouble(referenceExecution);
+    }
+
+    /**
+     * Checks if execution time is abs(execution - referenceValue) <= max_abs_error.
+     * If true stores the value.
+     *
+     * @param execution Pragma n execution
+     * @param execution_time Pragma execution time
+     */
+    void validTime(String execution, Double execution_time) {
+        if (Math.abs(execution_time - referenceValue) <= max_abs_error) {
+            bestExecution = execution;
+            bestExecutionTime = execution_time;
+        }
     }
 }
