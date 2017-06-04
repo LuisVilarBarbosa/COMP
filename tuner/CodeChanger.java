@@ -24,6 +24,8 @@ class CodeChanger {
     private ArrayList<PragmaScope> pragmaScopes;
     private ArrayList<Node> HIRs;
 
+    private ArrayList<Pragma> all_pragmas = new ArrayList<>();
+
     CodeChanger(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<Node> HIRs) {
         this.codeLines = codeLines;
         this.pragmaScopes = pragmaScopes;
@@ -35,7 +37,7 @@ class CodeChanger {
         generateFileWithCode(codeChanged);
         CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
         if (codeExecutor.compile())
-            codeExecutor.exec();
+            codeExecutor.exec(all_pragmas);
         else
             System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
         codeExecutor.delete();
@@ -61,12 +63,15 @@ class CodeChanger {
 
                     ArrayList<Node> max_abs_errorChildren = n2.getChildren();
                     String max_abs_errorVarName = max_abs_errorChildren.get(0).getInfo();
-                    //String max_abs_errorValue = max_abs_errorChildren.get(1).getInfo();
+                    String max_abs_errorValue = max_abs_errorChildren.get(1).getInfo();
+
+                    Pragma p = new Pragma(exploreVarName, startValue, endValue, max_abs_errorVarName, max_abs_errorValue);
+                    all_pragmas.add(p);
 
                     ArrayList<String> newEndCode = loadScopeEnd();
-                    adjustCode(newEndCode, exploreVarName, startValue, endValue, max_abs_errorVarName);
+                    adjustCode(newEndCode, p);
                     ArrayList<String> newStartCode = loadScopeBegin();
-                    adjustCode(newStartCode, exploreVarName, startValue, endValue, max_abs_errorVarName);
+                    adjustCode(newStartCode, p);
 
                     codeToAddByIndex.put(scopeEnd, newEndCode);
                     codeToAddByIndex.put(scopeBegin, newStartCode);
@@ -140,14 +145,14 @@ class CodeChanger {
         return lines;
     }
 
-    private void adjustCode(ArrayList<String> code, String exploreVarName, String startValue, String endValue, String max_abs_errorVarName) {
+    private void adjustCode(ArrayList<String> code, Pragma p) {
         for (int i = 0; i < code.size(); i++) {
             String line = code.get(i);
             line = line.replaceAll("varType", "double");
-            line = line.replaceAll("exploreVarName", exploreVarName);
-            line = line.replaceAll("startValue", startValue);
-            line = line.replaceAll("endValue", endValue);
-            line = line.replaceAll("max_abs_errorVarName", max_abs_errorVarName);
+            line = line.replaceAll("exploreVarName", p.varName);
+            line = line.replaceAll("startValue", p.startValue);
+            line = line.replaceAll("endValue", p.endValue);
+            line = line.replaceAll("max_abs_errorVarName", p.max_abs_errorVarName);
             code.set(i, line);
         }
     }

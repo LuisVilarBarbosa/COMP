@@ -3,10 +3,13 @@ package tuner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 class CodeExecutor {
     private String executableName;
     private String filePath;
+
+    private ArrayList<Pragma> all_pragmas;
 
     CodeExecutor(String filePath) {
         if (!isValid(filePath))
@@ -65,11 +68,9 @@ class CodeExecutor {
      * @throws IOException          ver run()
      * @throws InterruptedException ver run()
      */
-    void exec() throws IOException, InterruptedException {
+    void exec(ArrayList<Pragma> all_pragmas) throws IOException, InterruptedException {
+        this.all_pragmas = all_pragmas;
         ArrayList<String> outputMessages;
-        ArrayList<String> pragmas = new ArrayList<>();
-        ArrayList<Double> best_pragma_value = new ArrayList<>();
-        ArrayList<Double> best_execution_time = new ArrayList<>();
         Command command = new Command(executableName);
 
         command.setStoreOutput(true);
@@ -77,25 +78,56 @@ class CodeExecutor {
 
         outputMessages = command.getOutputStreamLines();
         for (String s : outputMessages) {
-            String[] temp = s.split("_");
-            if (!temp[0].isEmpty() && Character.isLetter(temp[0].charAt(0))) {
-                if (pragmas.contains(temp[0])) {
-                    int index = pragmas.indexOf(temp[0]);
-                    Double new_exec_time = Double.parseDouble(temp[2]);
-                    if (Double.compare(new_exec_time, best_execution_time.get(index)) < 0) {
-                        best_pragma_value.set(index, Double.parseDouble(temp[1]));
-                        best_execution_time.set(index, new_exec_time);
-                    }
-                } else {
-                    pragmas.add(temp[0]);
-                    best_pragma_value.add(Double.parseDouble(temp[1]));
-                    best_execution_time.add(Double.parseDouble(temp[2]));
-                }
-            }
+            String[] message = s.split("_");
+            if (!message[0].isEmpty() && Character.isLetter(message[0].charAt(0)))
+                checkBetterExecution(message);
         }
 
-        for (int i = 0; i < pragmas.size(); i++)
-            System.out.println("Best execution of " + pragmas.get(i) + ": " + best_pragma_value.get(i));
+        for (Pragma p : all_pragmas)
+            System.out.println("Best execution of " + p.varName + ": " + p.best_execution);
+    }
+
+    /**
+     * Searchs if the pragma with a pragma name exists.
+     *
+     * @param pragma_name Pragma name to exist
+     * @return True if exist, false if not
+     */
+    private boolean searchExistPragma(String pragma_name) {
+        for (Pragma p : all_pragmas)
+            if (Objects.equals(p.varName, pragma_name))
+                return true;
+        return false;
+    }
+
+    /**
+     * Returns the pragma with var name equal to the param.
+     *
+     * @param pragma_name Pragma name
+     * @return Pragma with param as name
+     */
+    private Pragma getPragma(String pragma_name) {
+        if (searchExistPragma(pragma_name))
+            for (Pragma p : all_pragmas)
+                if (Objects.equals(p.varName, pragma_name))
+                    return p;
+        return null;
+    }
+
+    /**
+     * Compares the previous execution time of a pragma with the new and updates the value if the new is lower.
+     *
+     * @param message String array with var name, var execution, and var execution time
+     */
+    private void checkBetterExecution(String[] message) {
+        Pragma p = getPragma(message[0]);
+        if (p != null) {
+            Double new_exec_time = Double.parseDouble(message[2]);
+            if (Double.compare(new_exec_time, p.best_execution_time) < 0) {
+                p.best_execution = Double.parseDouble(message[1]);
+                p.best_execution_time = new_exec_time;
+            }
+        }
     }
 
     /**
