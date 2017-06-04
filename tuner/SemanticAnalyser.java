@@ -122,7 +122,7 @@ public class SemanticAnalyser {
                 throw new Exception("The interval indicated in an 'explore' pragma must start and end with different values. The pragma will be ignored.");
             Node child1 = children.get(0);
             Node child2 = children.get(1);
-            if (Integer.parseInt(child1.getInfo()) > Integer.parseInt(child2.getInfo())) {
+            if (Double.parseDouble(child1.getInfo()) > Double.parseDouble(child2.getInfo())) {
                 children.set(0, child2);
                 children.set(1, child1);
                 System.out.println(var.getInfo() + ": The interval values were not in the correct order. The order has been changed.");
