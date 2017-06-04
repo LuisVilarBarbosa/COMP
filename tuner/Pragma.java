@@ -5,7 +5,7 @@ class Pragma {
     String startValue;
     String endValue;
     String max_abs_errorVarName;
-    private Double max_abs_error;
+    Double max_abs_error;
 
     Double referenceExecution;
     Double referenceValue;
@@ -28,9 +28,7 @@ class Pragma {
         this.startValue = startValue;
         this.endValue = endValue;
         this.max_abs_errorVarName = max_abs_errorVarName;
-        this.max_abs_error = Double.parseDouble(max_abs_error);
-        this.bestExecutionTime = 9999999d;
-        this.referenceValue = 9999999d;
+        this.max_abs_error = Double.parseDouble(max_abs_error) * 1000;
         this.referenceExecution = Double.parseDouble(referenceExecution);
     }
 

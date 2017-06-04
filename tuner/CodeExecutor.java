@@ -71,6 +71,7 @@ class CodeExecutor {
     void exec(ArrayList<Pragma> all_pragmas) throws IOException, InterruptedException {
         this.all_pragmas = all_pragmas;
         ArrayList<String> outputMessages;
+        ArrayList<String[]> cleanOutputMessages = new ArrayList<>();
         Command command = new Command(executableName);
 
         command.setStoreOutput(true);
@@ -80,11 +81,17 @@ class CodeExecutor {
         for (String s : outputMessages) {
             String[] message = s.split("_");
             if (!message[0].isEmpty() && Character.isLetter(message[0].charAt(0)))
-                checkBetterExecution(message);
+                cleanOutputMessages.add(message);
         }
 
+        for (String[] m : cleanOutputMessages)
+            setReferenceValue(m);
+
+        for (String[] m : cleanOutputMessages)
+            checkBetterExecution(m);
+
         for (Pragma p : all_pragmas)
-            System.out.println("Best execution of " + p.varName + ": " + p.bestExecution + " ///// " + p.referenceValue);
+            System.out.println("Best execution of " + p.varName + ": " + p.bestExecution + " _ " + p.bestExecutionTime + " ///// " + p.referenceValue);
     }
 
     /**
@@ -122,7 +129,6 @@ class CodeExecutor {
     private void checkBetterExecution(String[] message) {
         Pragma p = getPragma(message[0]);
         if (p != null) {
-            setReferenceValue(p, message);
             Double new_exec_time = Double.parseDouble(message[2]);
             if (Double.compare(new_exec_time, p.bestExecutionTime) < 0) {
                 p.validTime(message[1], new_exec_time);
@@ -133,13 +139,17 @@ class CodeExecutor {
     /**
      * Defines the reference value of a pragma execution time.
      *
-     * @param p       Pragma to change
      * @param message String array with var name, var execution, and var execution time
      */
-    private void setReferenceValue(Pragma p, String[] message) {
+    private void setReferenceValue(String[] message) {
+        Pragma p = getPragma(message[0]);
         Double referenceExecution = Double.parseDouble(message[1]);
-        if (Objects.equals(p.referenceExecution, referenceExecution))
-            p.referenceValue = Double.parseDouble(message[2]);
+        if (Objects.equals(p.referenceExecution, referenceExecution)) {
+            p.bestExecution = message[1];
+            Double referenceTime = Double.parseDouble(message[2]);
+            p.referenceValue = referenceTime;
+            p.bestExecutionTime = referenceTime;
+        }
     }
 
     /**
