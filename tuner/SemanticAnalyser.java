@@ -112,7 +112,7 @@ public class SemanticAnalyser {
                             matcher5 = pattern2.matcher(val2);
                             matcher6 = pattern2.matcher(val3);
                             //System.out.println(matcher4.matches() + " " + matcher5.matches() + " " + matcher6.matches());
-                            if(!(matcher4.matches() && !matcher5.matches() && !matcher6.matches()))
+                            if(!(matcher4.matches() && matcher5.matches() && matcher6.matches()))
                                 throw new NumberFormatException();
                         }
                     }
