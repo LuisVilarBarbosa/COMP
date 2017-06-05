@@ -5,7 +5,7 @@ NAME1: Diogo Cruz, NR1: up201105483, GRADE1: <0 to 20 value>, CONTRIBUTION1: <0 
 
 NAME2: Luís Barbosa, NR2: up201405729, GRADE2: 18, CONTRIBUTION2: 30%
 
-NAME3: Paulo Santos, NR3: up201403745, GRADE3: <0 to 20 value>, CONTRIBUTION3: <0 to 100 %>
+NAME3: Paulo Santos, NR3: up201403745, GRADE3: 17, CONTRIBUTION3: 23.3%
 
 NAME4: Sérgio Ferreira, NR4: up201403074, GRADE4: 17, CONTRIBUTION4: 23.3%
  
@@ -115,7 +115,7 @@ With that, we can always test if our modifications are correct, in order to impr
 
 Diogo:
 Luís: Implemented the classes Auto (except the log), Command, Node, Parser and PragmaScope. Implemented a big part of CodeChanger and half of SemanticAnalyser.
-Paulo: Implemented pragma STEP(x,y,z), developed functions in semantic analysis and in code changer, helped in pragma random.
+Paulo: Implemented pragma STEP(x,y,z), developed functions in SemanticAnalyser and in CodeChanger, helped developing the pragma random.
 Sérgio: Implemented pragma RANDOM(x,y,z) and some functions in semantic analysis, including changes on templates.
  
 **PROS: 
