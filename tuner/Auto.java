@@ -23,6 +23,7 @@ public class Auto {
 
         initializeLog();
 
+        // each arg is a filename
         for (int i = 0; i < args.length; i++) {
             try {
                 System.out.println("\n" + args[i] + ":");
@@ -61,7 +62,7 @@ public class Auto {
 
     private static void initializeLog() {
         try {
-            initializeLogFile();
+            Files.createFile(path);
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
             String current_time = dtf.format(now) + "\n";
@@ -72,14 +73,6 @@ public class Auto {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void initializeLogFile() {
-        try {
-            Files.createFile(path);
-        } catch (IOException ignored) {
-        }
-
     }
 
     private static void printTree(Node root) {
