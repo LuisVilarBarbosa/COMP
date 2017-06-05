@@ -23,7 +23,7 @@ public class SemanticAnalyser {
             try {
                 verifyPragmaDataTypes(this.HIRs.get(i));
                 verifyVariablesValuesOrder(this.HIRs.get(i));
-                verifyIfPassesReferencedValue(this.HIRs.get(i));
+                verifyIfPassesReferenceValue(this.HIRs.get(i));
                 verifyPragmaInstructionsCompatibility(this.HIRs.get(i));
                 verifyEqualVarNames(this.HIRs.get(i));
             } catch (Exception e) {
@@ -171,14 +171,14 @@ public class SemanticAnalyser {
             verifyEqualVarNames(n);
     }
 
-    private void verifyIfPassesReferencedValue(Node root) throws Exception {
+    private void verifyIfPassesReferenceValue(Node root) throws Exception {
         if (root.getChildren().size() > 0) {
             Node var = root.getChildren().get(0);
             ArrayList<Node> children = var.getChildren();
             if (children.size() == 2) {
                 Node child1 = children.get(0);
                 Node child2 = children.get(1);
-                if (child1.getChildren().size() > 0) {
+                if (child1.getChildren().size() > 1) {
                     Double val1 = Double.parseDouble(child1.getChildren().get(0).getInfo());
                     Double val2 = Double.parseDouble(child1.getChildren().get(1).getInfo());
                     Double val3 = 1.0;
@@ -187,12 +187,12 @@ public class SemanticAnalyser {
                     if (child2.getChildren().size() > 1) {
                         Double val4 = Double.parseDouble(child2.getChildren().get(1).getInfo());
 
-                        ArrayList<Double> usedValues = new ArrayList<>();
-
+                        boolean valueIsUsed = false;
                         for (double i = val1; i < val2; i += val3) {
-                            usedValues.add(i);
+                            if (i == val4)
+                                valueIsUsed = true;
                         }
-                        if (!usedValues.contains(val4))
+                        if (!valueIsUsed)
                             throw new Exception("The pragma variable need to pass through the referenced value");
                     }
                 }
