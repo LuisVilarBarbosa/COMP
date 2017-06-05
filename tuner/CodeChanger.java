@@ -157,20 +157,19 @@ class CodeChanger {
     }
 
     private void adjustCode(ArrayList<String> code, Pragma p) {
-        Random random = new Random();
         for (int i = 0; i < code.size(); i++) {
             String stmt1 = null, stmt2 = null, stmt3 = null;
             if(p.type.equals("explore")){
                 stmt1 = p.varName + " = " + p.startValue;
-                stmt2 = p.varName + " < " + p.endValue; //TODO qual é que querias aqui?
+                stmt2 = p.varName + " < " + p.endValue;
                 stmt3 = p.varName + " += " + p.inc;
             }
             else if(p.type.equals("random")){
-                int r = random.nextInt(Integer.parseInt(p.endValue)-Integer.parseInt(p.startValue)+1);
-                stmt1 = p.varName + " = " + r + ", " + "int i = 0";
-                stmt2 = "i < " + p.inc;
-                stmt3 = "i++";
+                stmt1 = p.varName + " = " p.startValue + " + rand() % (p.endValue - p.startValue + 1), " + "_TUNER_ITERATOR_varName = 0";
+                stmt2 = "_TUNER_ITERATOR_varName < " + p.inc;
+                stmt3 = "_TUNER_ITERATOR_varName++, " + p.varName + " = " + p.startValue + " rand() % (p.endValue - p.startValue + 1)";
             }
+
             String line = code.get(i);
             line = line.replaceAll("statement1", stmt1);
             line = line.replaceAll("statement2", stmt2);
