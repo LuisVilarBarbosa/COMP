@@ -116,8 +116,7 @@ public class SemanticAnalyser {
                                 if (!(matcher5.matches() && matcher6.matches() && matcher7.matches() && matcher8.matches()) || var.getInfo().equals("random"))
                                     throw new Exception("Pragma data types are incompatible.");
                             }
-                        }
-                        else {
+                        } else {
                             if (!(matcher.matches() && matcher2.matches() && matcher4.matches())) {
                                 pattern2 = Pattern.compile(decimals);
                                 matcher5 = pattern2.matcher(val1);
