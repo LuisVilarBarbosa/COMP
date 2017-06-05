@@ -1,9 +1,8 @@
 package tuner;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 class CodeChanger {
     private static final boolean isWindows = System.getProperty("os.name").contains("Win");
@@ -33,14 +32,20 @@ class CodeChanger {
     }
 
     void codeVariantsTest() throws IOException, InterruptedException {
-        ArrayList<String> codeChanged = changeCCode();
-        generateFileWithCode(codeChanged);
-        CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
-        if (codeExecutor.compile())
-            codeExecutor.exec(all_pragmas);
-        else
-            System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
-        codeExecutor.delete();
+        try {
+            checkIfPragmaVarsDifferent();
+            ArrayList<String> codeChanged = changeCCode();
+            generateFileWithCode(codeChanged);
+            CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
+            if (codeExecutor.compile())
+                codeExecutor.exec(all_pragmas);
+            else
+                System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
+            codeExecutor.delete();
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private ArrayList<String> changeCCode() throws IOException {
@@ -161,6 +166,25 @@ class CodeChanger {
             line = line.replaceAll("inc", p.inc);
             line = line.replaceAll("max_abs_errorVarName", p.max_abs_errorVarName);
             code.set(i, line);
+        }
+    }
+
+    private void checkIfPragmaVarsDifferent() throws Exception {
+        ArrayList<String> allVariables = new ArrayList<>();
+        for(int i = 0; i < HIRs.size(); i++) {
+            Node root = HIRs.get(i);
+            if(root.getChildren().size() > 0) {
+                Node child = root.getChildren().get(0);
+                if(child.getChildren().size() > 0) {
+                    String grandchild = child.getChildren().get(0).getInfo();
+                    allVariables.add(grandchild);
+                }
+            }
+        }
+        if(allVariables.size() > 0) {
+            Set<String> variablesSet = new HashSet<String>(allVariables);
+            if(variablesSet.size() != allVariables.size())
+                throw new Exception("The variables of different pragmas can't be equal.");
         }
     }
 
