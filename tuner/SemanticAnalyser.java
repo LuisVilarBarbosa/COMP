@@ -24,8 +24,7 @@ public class SemanticAnalyser {
                 verifyVariablesValuesOrder(this.HIRs.get(i));
                 verifyPragmaInstructionsCompatibility(this.HIRs.get(i));
                 verifyEqualVarNames(this.HIRs.get(i));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 this.HIRs.remove(i);
                 // The removal order is very important.
@@ -83,49 +82,49 @@ public class SemanticAnalyser {
         final Pattern pattern, pattern2;
         final Matcher matcher, matcher2, matcher3, matcher4, matcher5, matcher6, matcher7, matcher8;
 
-        if(root.getChildren().size() > 0) {
+        if (root.getChildren().size() > 0) {
             Node var = root.getChildren().get(0);
             ArrayList<Node> children = var.getChildren();
-            if(children.size() == 2) {
+            if (children.size() == 2) {
                 Node child1 = children.get(0);
                 Node child2 = children.get(1);
-                if(child1.getChildren().size() > 0) {
+                if (child1.getChildren().size() > 0) {
                     String val1 = child1.getChildren().get(0).getInfo();
                     String val2 = child1.getChildren().get(1).getInfo();
                     String val3 = null;
-                    if(child1.getChildren().size() == 3)
+                    if (child1.getChildren().size() == 3)
                         val3 = child1.getChildren().get(2).getInfo();
 
-                    if(child2.getChildren().size() > 1) {
+                    if (child2.getChildren().size() > 1) {
                         String val4 = child2.getChildren().get(1).getInfo();
 
                         pattern = Pattern.compile(nonDecimals);
                         matcher = pattern.matcher(val1);
                         matcher2 = pattern.matcher(val2);
-                        if(val3 != null)
+                        if (val3 != null)
                             matcher3 = pattern.matcher(val3);
                         else
                             matcher3 = null;
                         matcher4 = pattern.matcher(val4);
 
-                        if(!(matcher.matches() && matcher2.matches() && matcher4.matches())) {
-                            if(matcher3 != null) {
-                                if(!matcher3.matches()) {
-                                    pattern2 = Pattern.compile(decimals);
-                                    matcher5 = pattern2.matcher(val1);
-                                    matcher6 = pattern2.matcher(val2);
-                                    matcher7 = pattern2.matcher(val3);
-                                    matcher8 = pattern2.matcher(val4);
-                                    if(!(matcher5.matches() && matcher6.matches() && matcher7.matches() && matcher8.matches()))
-                                        throw new Exception("Pragma data types are incompatible.");
-                                }
+                        if (matcher3 != null) {
+                            if (!(matcher.matches() && matcher2.matches() && matcher3.matches() && matcher4.matches())) {
+                                pattern2 = Pattern.compile(decimals);
+                                matcher5 = pattern2.matcher(val1);
+                                matcher6 = pattern2.matcher(val2);
+                                matcher7 = pattern2.matcher(val3);
+                                matcher8 = pattern2.matcher(val4);
+                                if (!(matcher5.matches() && matcher6.matches() && matcher7.matches() && matcher8.matches()))
+                                    throw new Exception("Pragma data types are incompatible.");
                             }
-                            else {
+                        }
+                        else {
+                            if (!(matcher.matches() && matcher2.matches() && matcher4.matches())) {
                                 pattern2 = Pattern.compile(decimals);
                                 matcher5 = pattern2.matcher(val1);
                                 matcher6 = pattern2.matcher(val2);
                                 matcher8 = pattern2.matcher(val4);
-                                if(!(matcher5.matches() && matcher6.matches() && matcher8.matches()))
+                                if (!(matcher5.matches() && matcher6.matches() && matcher8.matches()))
                                     throw new Exception("Pragma data types are incompatible.");
                             }
                         }
@@ -174,27 +173,27 @@ public class SemanticAnalyser {
     }
 
     private void verifyIfPassesReferencedValue(Node root) throws Exception {
-        if(root.getChildren().size() > 0) {
+        if (root.getChildren().size() > 0) {
             Node var = root.getChildren().get(0);
             ArrayList<Node> children = var.getChildren();
-            if(children.size() == 2) {
+            if (children.size() == 2) {
                 Node child1 = children.get(0);
                 Node child2 = children.get(1);
-                if(child1.getChildren().size() > 0) {
+                if (child1.getChildren().size() > 0) {
                     Double val1 = Double.parseDouble(child1.getChildren().get(0).getInfo());
                     Double val2 = Double.parseDouble(child1.getChildren().get(1).getInfo());
                     Double val3 = 1.0;
-                    if(child1.getChildren().size() == 3)
+                    if (child1.getChildren().size() == 3)
                         val3 = Double.parseDouble(child1.getChildren().get(2).getInfo());
-                    if(child2.getChildren().size() > 1) {
+                    if (child2.getChildren().size() > 1) {
                         Double val4 = Double.parseDouble(child2.getChildren().get(1).getInfo());
 
                         ArrayList<Double> usedValues = new ArrayList<>();
 
-                        for(double i = val1; i < val2; i += val3) {
+                        for (double i = val1; i < val2; i += val3) {
                             usedValues.add(i);
                         }
-                        if(!usedValues.contains(val4))
+                        if (!usedValues.contains(val4))
                             throw new Exception("The pragma variable need to pass through the referenced value");
                     }
                 }
