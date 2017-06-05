@@ -1,4 +1,4 @@
-for (exploreVarName = startValue; exploreVarName < endValue; exploreVarName++) {
+for (exploreVarName = startValue; exploreVarName < endValue; exploreVarName+= inc) {
 	LARGE_INTEGER _TUNER_FREQUENCY_exploreVarName;
 	LARGE_INTEGER _TUNER_START_exploreVarName;
 	LARGE_INTEGER _TUNER_END_exploreVarName;

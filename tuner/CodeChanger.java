@@ -60,6 +60,9 @@ class CodeChanger {
                     ArrayList<Node> varChildren = exploreChildren.get(0).getChildren();
                     String startValue = varChildren.get(0).getInfo();
                     String endValue = varChildren.get(1).getInfo();
+                    String inc = "1";
+                    if(varChildren.size() == 3)
+                        inc = varChildren.get(2).getInfo();
 
                     ArrayList<Node> max_abs_errorChildren = n2.getChildren();
                     String max_abs_errorVarName = max_abs_errorChildren.get(0).getInfo();
@@ -68,7 +71,7 @@ class CodeChanger {
                     ArrayList<Node> referenceChildren = exploreChildren.get(1).getChildren();
                     String referenceExecution = referenceChildren.get(1).getInfo();
 
-                    Pragma p = new Pragma(exploreVarName, startValue, endValue, max_abs_errorVarName, max_abs_errorValue, referenceExecution);
+                    Pragma p = new Pragma(exploreVarName, startValue, endValue, inc, max_abs_errorVarName, max_abs_errorValue, referenceExecution);
                     all_pragmas.add(p);
 
                     ArrayList<String> newEndCode = loadScopeEnd();
@@ -155,6 +158,7 @@ class CodeChanger {
             line = line.replaceAll("exploreVarName", p.varName);
             line = line.replaceAll("startValue", p.startValue);
             line = line.replaceAll("endValue", p.endValue);
+            line = line.replaceAll("inc", p.inc);
             line = line.replaceAll("max_abs_errorVarName", p.max_abs_errorVarName);
             code.set(i, line);
         }
