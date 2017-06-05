@@ -8,8 +8,10 @@ public class SemanticAnalyser {
     private ArrayList<String> codeLines;
     private ArrayList<PragmaScope> pragmaScopes;
     private ArrayList<Node> HIRs;
+    private Pattern number;
 
     public SemanticAnalyser(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<Node> syntacticAnalysisTrees) {
+        number = Pattern.compile("([0-9]+(.[0-9]*)?)");
         this.codeLines = codeLines;
         this.pragmaScopes = pragmaScopes;
         this.HIRs = cleanTrees(syntacticAnalysisTrees);
@@ -58,7 +60,8 @@ public class SemanticAnalyser {
         for (int i = 1; i < children.size(); i++) {
             Node child1 = children.get(i - 1);
             Node child2 = children.get(i);
-            if (child1.getInfo().equals(child2.getInfo())) {
+            Matcher matcher = number.matcher(child1.getInfo());
+            if (child1.getInfo().equals(child2.getInfo()) && !matcher.matches()) {
                 child1.getChildren().addAll(child2.getChildren());
                 children.remove(i);
                 i--;
@@ -136,8 +139,6 @@ public class SemanticAnalyser {
         if (root.getInfo().equals("explore") || root.getInfo().equals("random")) {
             Node var = root.getChildren().get(0);
             ArrayList<Node> children = var.getChildren();
-            if (children.size() < 2 && children.size() > 4)
-                throw new Exception("The interval indicated in an '" + root.getInfo() + "' pragma must start and end with different values. The pragma will be ignored.");
             Node child1 = children.get(0);
             Node child2 = children.get(1);
             if (Double.parseDouble(child1.getInfo()) > Double.parseDouble(child2.getInfo())) {
