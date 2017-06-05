@@ -162,7 +162,7 @@ class CodeChanger {
             String stmt1 = null, stmt2 = null, stmt3 = null;
             if(p.type.equals("explore")){
                 stmt1 = p.varName + " = " + p.startValue;
-                stmt2 = p.varName + " < " + p.endValueM;
+                stmt2 = p.varName + " < " + p.endValue; //TODO qual é que querias aqui?
                 stmt3 = p.varName + " += " + p.inc;
             }
             else if(p.type.equals("random")){

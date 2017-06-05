@@ -1,6 +1,7 @@
 package tuner;
 
 class Pragma {
+    String type;
     String varName;
     String startValue;
     String endValue;
