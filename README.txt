@@ -1,7 +1,7 @@
 ﻿**PROJECT TITLE: Auto
 **GROUP: G15
 
-NAME1: Diogo Cruz, NR1: up201105483, GRADE1: <0 to 20 value>, CONTRIBUTION1: <0 to 100 %>
+NAME1: Diogo Cruz, NR1: up201105483, GRADE1: 17, CONTRIBUTION1: 23.3%
 
 NAME2: Luís Barbosa, NR2: up201405729, GRADE2: 18, CONTRIBUTION2: 30%
 
@@ -113,7 +113,7 @@ With that, we can always test if our modifications are correct, in order to impr
  
 **TASK DISTRIBUTION:
 
-Diogo:
+Diogo: Implemented the Log, the result analysis, the analysis of max_abs_error in CodeChanger, the CodeExecutor & Pragma files, helped with scripts & Command.
 Luís: Implemented the classes Auto (except the log), Command, Node, Parser and PragmaScope. Implemented a big part of CodeChanger and half of SemanticAnalyser.
 Paulo: Implemented pragma STEP(x,y,z), developed functions in SemanticAnalyser and in CodeChanger, helped developing the pragma RANDOM and the JJTree.
 Sérgio: Implemented pragma RANDOM(x,y,z) and some functions in semantic analysis, including changes on templates and helped developing the JJTree.
