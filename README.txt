@@ -115,8 +115,8 @@ With that, we can always test if our modifications are correct, in order to impr
 
 Diogo:
 Luís: Implemented the classes Auto (except the log), Command, Node, Parser and PragmaScope. Implemented a big part of CodeChanger and half of SemanticAnalyser.
-Paulo: Implemented pragma STEP(x,y,z), developed functions in SemanticAnalyser and in CodeChanger, helped developing the pragma random.
-Sérgio: Implemented pragma RANDOM(x,y,z) and some functions in semantic analysis, including changes on templates.
+Paulo: Implemented pragma STEP(x,y,z), developed functions in SemanticAnalyser and in CodeChanger, helped developing the pragma RANDOM and the JJTree.
+Sérgio: Implemented pragma RANDOM(x,y,z) and some functions in semantic analysis, including changes on templates and helped developing the JJTree.
  
 **PROS: 
 
