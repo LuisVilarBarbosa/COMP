@@ -27,7 +27,6 @@ public class SemanticAnalyser {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 this.HIRs.remove(i);
-                // The removal order is very important.
                 this.pragmaScopes.remove(i);
                 i--;
             }
