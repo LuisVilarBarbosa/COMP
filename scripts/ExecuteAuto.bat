@@ -1,5 +1,5 @@
 @echo off
 cd ..
-java -cp bin tuner.Auto c_files/*.c
+java -cp bin tuner.Auto testsuite/*.c
 cd scripts
 pause
