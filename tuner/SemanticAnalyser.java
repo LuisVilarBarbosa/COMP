@@ -20,8 +20,8 @@ public class SemanticAnalyser {
         for (int i = 0; i < this.HIRs.size(); i++) {
             try {
                 verifyPragmaDataTypes(this.HIRs.get(i));
-                verifyIfPassesReferencedValue(this.HIRs.get(i));
                 verifyVariablesValuesOrder(this.HIRs.get(i));
+                verifyIfPassesReferencedValue(this.HIRs.get(i));
                 verifyPragmaInstructionsCompatibility(this.HIRs.get(i));
                 verifyEqualVarNames(this.HIRs.get(i));
             } catch (Exception e) {
@@ -135,7 +135,7 @@ public class SemanticAnalyser {
     }
 
     private void verifyVariablesValuesOrder(Node root) throws Exception {
-        if (root.getInfo().equals("explore")) {
+        if (root.getInfo().equals("explore") || root.getInfo().equals("random")) {
             Node var = root.getChildren().get(0);
             ArrayList<Node> children = var.getChildren();
             if (children.size() < 2 && children.size() > 4)
@@ -162,7 +162,7 @@ public class SemanticAnalyser {
 
     private void verifyEqualVarNames(Node root) throws Exception {
         ArrayList<Node> children = root.getChildren();
-        if (root.getInfo().equals("explore")) {
+        if (root.getInfo().equals("explore") || root.getInfo().equals("random")) {
             String var1 = children.get(0).getInfo();
             String var2 = children.get(1).getChildren().get(0).getInfo();
             if (!var1.equals(var2))
