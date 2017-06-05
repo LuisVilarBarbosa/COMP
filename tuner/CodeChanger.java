@@ -30,21 +30,16 @@ class CodeChanger {
         this.HIRs = HIRs;
     }
 
-    void codeVariantsTest() throws IOException, InterruptedException {
-        try {
-            checkIfPragmaVarsDifferent();
-            ArrayList<String> codeChanged = changeCCode();
-            generateFileWithCode(codeChanged);
-            CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
-            if (codeExecutor.compile())
-                codeExecutor.exec(all_pragmas);
-            else
-                System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
-            codeExecutor.delete();
-        }
-        catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
+    void codeVariantsTest() throws Exception {
+        checkIfPragmaVarsDifferent();
+        ArrayList<String> codeChanged = changeCCode();
+        generateFileWithCode(codeChanged);
+        CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
+        if (codeExecutor.compile())
+            codeExecutor.exec(all_pragmas);
+        else
+            System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
+        codeExecutor.delete();
     }
 
     private ArrayList<String> changeCCode() throws IOException {
@@ -176,7 +171,6 @@ class CodeChanger {
             line = line.replaceAll("statement1", stmt1);
             line = line.replaceAll("statement2", stmt2);
             line = line.replaceAll("statement3", stmt3);
-            line = line.replaceAll("varType", "double");
             line = line.replaceAll("exploreVarName", p.varName);
             line = line.replaceAll("startValue", p.startValue);
             line = line.replaceAll("endValue", p.endValue);
