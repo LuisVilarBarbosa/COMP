@@ -24,7 +24,8 @@ class Pragma {
      * @param max_abs_error        Error value
      * @param referenceExecution   Pragma n execution
      */
-    Pragma(String varName, String startValue, String endValue, String inc, String max_abs_errorVarName, String max_abs_error, String referenceExecution) {
+    Pragma(String type, String varName, String startValue, String endValue, String inc, String max_abs_errorVarName, String max_abs_error, String referenceExecution) {
+        this.type = type;
         this.varName = varName;
         this.startValue = startValue;
         this.endValue = endValue;
