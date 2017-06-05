@@ -31,7 +31,7 @@ class CodeChanger {
     }
 
     void codeVariantsTest() throws Exception {
-        checkIfPragmaVarsDifferent();
+        checkIfAllPragmaVarsAreDifferent();
         ArrayList<String> codeChanged = changeCCode();
         generateFileWithCode(codeChanged);
         CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
@@ -180,7 +180,7 @@ class CodeChanger {
         }
     }
 
-    private void checkIfPragmaVarsDifferent() throws Exception {
+    private void checkIfAllPragmaVarsAreDifferent() throws Exception {
         ArrayList<String> allVariables = new ArrayList<>();
         for(int i = 0; i < HIRs.size(); i++) {
             Node root = HIRs.get(i);
@@ -192,11 +192,9 @@ class CodeChanger {
                 }
             }
         }
-        if(allVariables.size() > 0) {
-            Set<String> variablesSet = new HashSet<String>(allVariables);
-            if(variablesSet.size() != allVariables.size())
-                throw new Exception("The variables of different pragmas can't be equal.");
-        }
+        HashSet<String> variablesSet = new HashSet<>(allVariables);
+        if(variablesSet.size() != allVariables.size())
+            throw new Exception("The variables of different pragmas cannot have the same name.");
     }
 
 }
