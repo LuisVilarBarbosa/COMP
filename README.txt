@@ -1,9 +1,9 @@
-**PROJECT TITLE: Auto
+﻿**PROJECT TITLE: Auto
 **GROUP: G15
 
 NAME1: Diogo Cruz, NR1: up201105483, GRADE1: <0 to 20 value>, CONTRIBUTION1: <0 to 100 %>
 
-NAME2: Luís Barbosa, NR2: up201405729, GRADE2: <0 to 20 value>, CONTRIBUTION2: <0 to 100 %>
+NAME2: Luís Barbosa, NR2: up201405729, GRADE2: 18, CONTRIBUTION2: 30%
 
 NAME3: Paulo Santos, NR3: up201403745, GRADE3: <0 to 20 value>, CONTRIBUTION3: <0 to 100 %>
 
@@ -98,8 +98,14 @@ At this stage, we check in all pragmas if some of them have the same name. If no
 We have templates and change them with the correct information according to the file that is being used.
 After that, a file with the new code is created and executed.
  
-**OVERVIEW: (refer the approach used in your tool, the main algorithms, the third-party tools and/or packages, etc.)
- 
+**OVERVIEW:
+
+We have developed our program in Java using JavaCC as a third-party tool.
+We have used JJTree to generate a syntax tree of a pragma, verifying if it is lexical and syntactically correct.
+For each pragma found, our program sends the pragma line to JJTree in order to verify the pragma and generate the tree. Our program merges the trees of two corresponding pragmas.
+This trees are CSTs and become ASTs on the semantic analysis. The ASTs are then used to verify if the pragma instruction is semantically correct and to adjust the template C code
+that is added to the input C file to perform the measurements.
+
 **TESTSUITE AND TEST INFRASTRUCTURE: 
 
 In order to test our tool, we have six test files in the folder 'c_files' that are always run when we execute our tool.
@@ -108,7 +114,7 @@ With that, we can always test if our modifications are correct, in order to impr
 **TASK DISTRIBUTION:
 
 Diogo:
-Luís:
+Luís: Implemented the classes Auto (except the log), Command, Node, Parser and PragmaScope. Implemented a big part of CodeChanger and half of SemanticAnalyser.
 Paulo: Implemented pragma STEP(x,y,z), developed functions in semantic analysis and in code changer, helped in pragma random.
 Sérgio: Implemented pragma RANDOM(x,y,z) and some functions in semantic analysis, including changes on templates.
  
