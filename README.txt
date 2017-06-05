@@ -110,7 +110,7 @@ With that, we can always test if our modifications are correct, in order to impr
 Diogo:
 Luís:
 Paulo: Implemented pragma STEP(x,y,z), developed functions in semantic analysis and in code changer, helped in pragma random.
-Sérgio:
+Sérgio: Implemented pragma RANDOM(x,y,z) and some functions in semantic analysis, including changes on templates.
  
 **PROS: 
 
