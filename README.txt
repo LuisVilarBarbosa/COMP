@@ -94,6 +94,12 @@ tuner
  
 **CODE GENERATION: (when applicable, describe how the code generation of your tool works and identify the possible problems your tool has regarding code generation.)
  
+At this stage, we check in all pragmas if some of them have the same name. If not, we proceed to change the C code.
+
+We have templates and change them with the correct information according to the file that is being used.
+
+After that, a file with the new code is created and executed.
+ 
 **OVERVIEW: (refer the approach used in your tool, the main algorithms, the third-party tools and/or packages, etc.)
  
 **TESTSUITE AND TEST INFRASTRUCTURE: (Describe the content of your testsuite regarding the number of examples, the approach to automate the test, etc.)
