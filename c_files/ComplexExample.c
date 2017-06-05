@@ -19,8 +19,8 @@ int main() {
 		acc2 += VAR2;
 	}
 	acc2 = acc2 + VAR2;
-	#pragma tuner max_abs_error acc2 100
+	#pragma tuner max_abs_error acc2 10
 	acc = acc + STEP;
-	#pragma tuner max_abs_error acc 50
+	#pragma tuner max_abs_error acc 5
 	return 0;
 }

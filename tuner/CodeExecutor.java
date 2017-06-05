@@ -171,7 +171,7 @@ class CodeExecutor {
         for (Pragma p : all_pragmas) {
             String result = "Best execution of " + p.varName + " was " + p.bestExecution + " with a error of " + p.bestExecutionValue + ".\n";
             Files.write(path, result.getBytes(), StandardOpenOption.APPEND);
-            String reference = "Referece of " + p.varName + ": " + p.referenceExecution + " with a value of " + p.referenceValue + ".\n";
+            String reference = "Reference of " + p.varName + ": " + p.referenceExecution + " with a value of " + p.referenceValue + ".\n";
             Files.write(path, reference.getBytes(), StandardOpenOption.APPEND);
         }
         Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
