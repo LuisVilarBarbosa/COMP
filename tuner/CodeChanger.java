@@ -21,13 +21,13 @@ class CodeChanger {
     private ArrayList<String> codeLines;
     private ArrayList<PragmaScope> pragmaScopes;
     private ArrayList<Node> HIRs;
-
-    private ArrayList<Pragma> all_pragmas = new ArrayList<>();
+    private ArrayList<Pragma> allPragmas;
 
     CodeChanger(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<Node> HIRs) {
         this.codeLines = codeLines;
         this.pragmaScopes = pragmaScopes;
         this.HIRs = HIRs;
+        this.allPragmas = new ArrayList<>();
     }
 
     void codeVariantsTest() throws Exception {
@@ -36,7 +36,7 @@ class CodeChanger {
         generateFileWithCode(codeChanged);
         CodeExecutor codeExecutor = new CodeExecutor(testCodeFile);
         if (codeExecutor.compile())
-            codeExecutor.exec(all_pragmas);
+            codeExecutor.exec(allPragmas);
         else
             System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
         codeExecutor.delete();
@@ -63,7 +63,6 @@ class CodeChanger {
                     if(varChildren.size() == 3)
                         inc = varChildren.get(2).getInfo();
 
-
                     ArrayList<Node> max_abs_errorChildren = n2.getChildren();
                     String max_abs_errorVarName = max_abs_errorChildren.get(0).getInfo();
                     String max_abs_errorValue = max_abs_errorChildren.get(1).getInfo();
@@ -72,7 +71,7 @@ class CodeChanger {
                     String referenceExecution = referenceChildren.get(1).getInfo();
 
                     Pragma p = new Pragma(n1.getInfo(), exploreVarName, startValue, endValue, inc, max_abs_errorVarName, max_abs_errorValue, referenceExecution);
-                    all_pragmas.add(p);
+                    allPragmas.add(p);
 
                     ArrayList<String> newEndCode = loadScopeEnd();
                     adjustCode(newEndCode, p);
@@ -152,29 +151,28 @@ class CodeChanger {
     }
 
     private void adjustCode(ArrayList<String> code, Pragma p) {
-        for (int i = 0; i < code.size(); i++) {
-            String stmt1 = null, stmt2 = null, stmt3 = null;
-            String line = code.get(i);
-            if(p.type.equals("explore")){
-                stmt1 = p.varName + " = " + p.startValue;
-                stmt2 = p.varName + " < " + p.endValue;
-                stmt3 = p.varName + " += " + p.inc;
-                line = line.replaceAll("random", "");
-            }
-            else if(p.type.equals("random")){
-                stmt1 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + "-" + p.startValue + "+1), _TUNER_ITERATOR_"+ p.varName + "= 0";
-                stmt2 = "_TUNER_ITERATOR_" + p.varName + "< " + p.inc;
-                stmt3 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + "-" + p.startValue + "+1)," + "_TUNER_ITERATOR_" + p.varName + "++";
-                line = line.replaceAll("random", "int _TUNER_ITERATOR_" + p.varName + ";");
-            }
+        String stmt1 = null, stmt2 = null, stmt3 = null;
+        if(p.type.equals("explore")){
+            stmt1 = p.varName + " = " + p.startValue;
+            stmt2 = p.varName + " <= " + p.endValue;
+            stmt3 = p.varName + " += " + p.inc;
+        }
+        else if(p.type.equals("random")){
+            stmt1 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + " - " + p.startValue + " + 1), _TUNER_ITERATOR_"+ p.varName + " = 0";
+            stmt2 = "_TUNER_ITERATOR_" + p.varName + " < " + p.inc;
+            stmt3 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + " - " + p.startValue + " + 1)," + "_TUNER_ITERATOR_" + p.varName + "++";
+        }
 
+        for (int i = 0; i < code.size(); i++) {
+            String line = code.get(i);
+            if(p.type.equals("explore"))
+                line = line.replaceAll("iteratorForRandom", "");
+            else if(p.type.equals("random"))
+                line = line.replaceAll("iteratorForRandom", "int _TUNER_ITERATOR_" + p.varName + ";");
             line = line.replaceAll("statement1", stmt1);
             line = line.replaceAll("statement2", stmt2);
             line = line.replaceAll("statement3", stmt3);
             line = line.replaceAll("exploreVarName", p.varName);
-            line = line.replaceAll("startValue", p.startValue);
-            line = line.replaceAll("endValue", p.endValue);
-            line = line.replaceAll("inc", p.inc);
             line = line.replaceAll("max_abs_errorVarName", p.max_abs_errorVarName);
             code.set(i, line);
         }
