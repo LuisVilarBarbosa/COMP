@@ -153,8 +153,10 @@ public class SemanticAnalyser {
 
     private void verifyPragmaInstructionsCompatibility(Node root) throws Exception {
         ArrayList<Node> children = root.getChildren();
-        if (children.size() >= 2 && (children.get(0).equals("explore") || children.get(0).equals("random")) && !children.get(1).equals("max_abs_error"))
-            throw new Exception("One start pragma is not compatible with the end pragma. They will be ignored.");
+        if (children.size() >= 2) {
+            if (((children.get(0).getInfo().equals("explore") || children.get(0).getInfo().equals("random")) && !children.get(1).getInfo().equals("max_abs_error")) || children.get(0).getInfo().equals("max_abs_error"))
+                throw new Exception("One start pragma is not compatible with the end pragma. They will be ignored.");
+        }
         for (Node n : root.getChildren())
             verifyPragmaInstructionsCompatibility(n);
     }
