@@ -13,6 +13,7 @@ class Pragma {
     Double referenceValue;
 
     String bestExecution;
+    Double bestExecutionValue;
     Double bestExecutionTime;
 
     /**
@@ -41,11 +42,13 @@ class Pragma {
      * If true stores the value.
      *
      * @param execution      Pragma n execution
+     * @param execution_value Pragma execution value
      * @param execution_time Pragma execution time
      */
-    void validTime(String execution, Double execution_time) {
-        if (Math.abs(execution_time - referenceValue) <= max_abs_error) {
+    void validTime(String execution, Double execution_value, Double execution_time) {
+        if (Math.abs(execution_value - referenceValue) <= max_abs_error) {
             bestExecution = execution;
+            bestExecutionValue = execution_value;
             bestExecutionTime = execution_time;
         }
     }

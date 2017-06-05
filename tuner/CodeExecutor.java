@@ -132,11 +132,15 @@ class CodeExecutor {
      */
     private void checkBetterExecution(String[] message) {
         Pragma p = getPragma(message[0]);
-        if (p != null) {
+
+        if (p != null && p.bestExecutionTime != null && p.bestExecutionValue != null) {
             Double new_exec_time = Double.parseDouble(message[2]);
-            if (Double.compare(new_exec_time, p.bestExecutionTime) < 0) {
-                p.validTime(message[1], new_exec_time);
-            }
+            Double new_exec_value = Double.parseDouble(message[3]);
+
+            if (Double.compare(new_exec_value, p.bestExecutionValue) < 0)
+                p.validTime(message[1], new_exec_value, new_exec_time);
+            else if (Double.compare(new_exec_value, p.bestExecutionValue) == 0 && Double.compare(new_exec_time, p.bestExecutionTime) <= 0)
+                p.validTime(message[1], new_exec_value, new_exec_time);
         }
     }
 
@@ -144,23 +148,31 @@ class CodeExecutor {
      * Defines the reference value of a pragma execution time.
      *
      * @param message String array with var name, var execution, and var execution time
+     * @return true if reference value was defined, else false
      */
-    private void setReferenceValue(String[] message) {
+    private boolean setReferenceValue(String[] message) {
         Pragma p = getPragma(message[0]);
         Double referenceExecution = Double.parseDouble(message[1]);
         if (Objects.equals(p.referenceExecution, referenceExecution)) {
             p.bestExecution = message[1];
             Double referenceTime = Double.parseDouble(message[2]);
-            p.referenceValue = referenceTime;
+            Double referenceValue = Double.parseDouble(message[3]);
+
+            p.referenceValue = referenceValue;
+            p.bestExecutionValue = referenceValue;
             p.bestExecutionTime = referenceTime;
+            return true;
         }
+        return false;
     }
 
     private void writeLog() throws IOException {
         Path path = Paths.get("output.txt");
         for (Pragma p : all_pragmas) {
-            String result = "Best execution of " + p.varName + " was " + p.bestExecution + " with a execution time of " + p.bestExecutionTime + "ms.\n";
+            String result = "Best execution of " + p.varName + " was " + p.bestExecution + " with a error of " + p.bestExecutionValue + ".\n";
             Files.write(path, result.getBytes(), StandardOpenOption.APPEND);
+            String reference = "Referece execution was " + p.referenceExecution + " with " + p.referenceValue + ".\n";
+            Files.write(path, reference.getBytes(), StandardOpenOption.APPEND);
         }
         Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
     }
