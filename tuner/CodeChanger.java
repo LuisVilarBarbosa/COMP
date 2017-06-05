@@ -1,7 +1,10 @@
 package tuner;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 
 class CodeChanger {
     private static final boolean isWindows = System.getProperty("os.name").contains("Win");
@@ -60,7 +63,7 @@ class CodeChanger {
                     String startValue = varChildren.get(0).getInfo();
                     String endValue = varChildren.get(1).getInfo();
                     String inc = "1";
-                    if(varChildren.size() == 3)
+                    if (varChildren.size() == 3)
                         inc = varChildren.get(2).getInfo();
 
                     ArrayList<Node> max_abs_errorChildren = n2.getChildren();
@@ -152,22 +155,21 @@ class CodeChanger {
 
     private void adjustCode(ArrayList<String> code, Pragma p) {
         String stmt1 = null, stmt2 = null, stmt3 = null;
-        if(p.type.equals("explore")){
+        if (p.type.equals("explore")) {
             stmt1 = p.varName + " = " + p.startValue;
             stmt2 = p.varName + " <= " + p.endValue;
             stmt3 = p.varName + " += " + p.controlValue;
-        }
-        else if(p.type.equals("random")){
-            stmt1 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + " - " + p.startValue + " + 1), _TUNER_ITERATOR_"+ p.varName + " = 0";
+        } else if (p.type.equals("random")) {
+            stmt1 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + " - " + p.startValue + " + 1), _TUNER_ITERATOR_" + p.varName + " = 0";
             stmt2 = "_TUNER_ITERATOR_" + p.varName + " < " + p.controlValue;
             stmt3 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + " - " + p.startValue + " + 1)," + "_TUNER_ITERATOR_" + p.varName + "++";
         }
 
         for (int i = 0; i < code.size(); i++) {
             String line = code.get(i);
-            if(p.type.equals("explore"))
+            if (p.type.equals("explore"))
                 line = line.replaceAll("iteratorForRandom", "");
-            else if(p.type.equals("random"))
+            else if (p.type.equals("random"))
                 line = line.replaceAll("iteratorForRandom", "int _TUNER_ITERATOR_" + p.varName + ";");
             line = line.replaceAll("statement1", stmt1);
             line = line.replaceAll("statement2", stmt2);
@@ -180,18 +182,18 @@ class CodeChanger {
 
     private void checkIfAllPragmaVarsAreDifferent() throws Exception {
         ArrayList<String> allVariables = new ArrayList<>();
-        for(int i = 0; i < HIRs.size(); i++) {
+        for (int i = 0; i < HIRs.size(); i++) {
             Node root = HIRs.get(i);
-            if(root.getChildren().size() > 0) {
+            if (root.getChildren().size() > 0) {
                 Node child = root.getChildren().get(0);
-                if(child.getChildren().size() > 0) {
+                if (child.getChildren().size() > 0) {
                     String grandchild = child.getChildren().get(0).getInfo();
                     allVariables.add(grandchild);
                 }
             }
         }
         HashSet<String> variablesSet = new HashSet<>(allVariables);
-        if(variablesSet.size() != allVariables.size())
+        if (variablesSet.size() != allVariables.size())
             throw new Exception("The variables of different pragmas cannot have the same name.");
     }
 

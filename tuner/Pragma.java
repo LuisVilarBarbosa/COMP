@@ -31,9 +31,9 @@ class Pragma {
      * Checks if execution time is abs(execution - referenceValue) <= max_abs_error.
      * If true stores the value.
      *
-     * @param execution      Pragma n execution
+     * @param execution       Pragma n execution
      * @param execution_value Pragma execution value
-     * @param execution_time Pragma execution time
+     * @param execution_time  Pragma execution time
      */
     void validTime(String execution, Double execution_value, Double execution_time) {
         if (Math.abs(execution_value - referenceValue) <= max_abs_error) {
