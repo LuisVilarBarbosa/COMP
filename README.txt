@@ -34,7 +34,10 @@ In our tool, we consider important to implement five semantic rules. They are:
 - Verify if the pragma data types are equal: we look for all the values used in the pragma, and make sure that they are all integers or doubles.
 - Verify if the interval indicated in the pragma is in the correct order.
 - Verify if is possible to pass through the value referenced in the pragma, considering the interval that is declared, and the step.
-- 
+- Verify if for each starting pragma exists a compatible ending pragma.
+- Verify if a pragma only refers to one variable.
+
+Everytime this verifications don't apply, an exception is raised with an appropriate message.
  
 **INTERMEDIATE REPRESENTATIONS (IRs): (for example, when applicable, briefly describe the HLIR (high-level IR) and the LLIR (low-level IR) used, if your tool includes an LLIR with structure different from the HLIR)
  
