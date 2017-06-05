@@ -40,6 +40,7 @@ TOKEN:
 	< PRAGMA: ("#pragma") >
 	| < TUNER: ("tuner") >
 	| < EXPLORE: ("explore") >
+	| < RANDOM: ("random") >
 	| < MAX_ABS_ERROR: ("max_abs_error") >
 	| < LEFT_PARENTHESES: ("(") >
 	| < COMMA: (",") >
@@ -68,7 +69,7 @@ void Project(): {Token t;}
 
 void Spec(): {Token t;}
 {
-	(t=<EXPLORE>
+	((t=<EXPLORE> | t=<RANDOM>)
 	{jjtThis.val = t.image;}
 	Macro()
 	Reference())
@@ -97,7 +98,7 @@ void Reference(): {Token t;}
 	t=<REFERENCE>
 	{jjtThis.val = t.image;}
 	<LEFT_PARENTHESES>
-	Var()
+	(Var() | t=<RANDOM>)
 	<EQUAL>
 	Value()
 	<RIGHT_PARENTHESES>
