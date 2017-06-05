@@ -2,6 +2,10 @@ package tuner;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -91,8 +95,7 @@ class CodeExecutor {
         for (String[] m : cleanOutputMessages)
             checkBetterExecution(m);
 
-        for (Pragma p : all_pragmas)
-            System.out.println("Best execution of " + p.varName + ": " + p.bestExecution + " _ " + p.bestExecutionTime + " ///// " + p.referenceValue);
+        writeLog();
     }
 
     /**
@@ -151,6 +154,15 @@ class CodeExecutor {
             p.referenceValue = referenceTime;
             p.bestExecutionTime = referenceTime;
         }
+    }
+
+    private void writeLog() throws IOException {
+        Path path = Paths.get("output.txt");
+        for (Pragma p : all_pragmas) {
+            String result = "Best execution of " + p.varName + ": " + p.bestExecution + " _ " + p.bestExecutionTime + " ///// " + p.referenceValue + "\n";
+            Files.write(path, result.getBytes(), StandardOpenOption.APPEND);
+        }
+        Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
     }
 
     /**

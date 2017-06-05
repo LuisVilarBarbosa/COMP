@@ -1,10 +1,16 @@
 package tuner;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Auto {
+    private static Path path = Paths.get("output.txt");
 
     public static void main(String[] args) {
         if (args.length == 0)
@@ -16,10 +22,13 @@ public class Auto {
             return;
         }
 
-        // each arg is a filename
+        initializeLog();
+
         for (int i = 0; i < args.length; i++) {
             try {
                 System.out.println("\n" + args[i] + ":");
+                String file_name = args[i] + ":\n";
+                Files.write(path, file_name.getBytes(), StandardOpenOption.APPEND);
                 FileReader fileReader = new FileReader(args[i]);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 Parser parser = new Parser(bufferedReader);
@@ -49,6 +58,23 @@ public class Auto {
     private static void printStrings(ArrayList<String> tokens) {
         for (String token : tokens)
             System.out.println(token);
+    }
+
+    private static void initializeLog() {
+        try {
+            Files.createFile(path);
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            String current_time = dtf.format(now) + "\n";
+            Files.write(path, current_time.getBytes(), StandardOpenOption.APPEND);
+            
+            String division = "-------------------\n";
+            Files.write(path, division.getBytes(), StandardOpenOption.APPEND);
+        } catch (FileAlreadyExistsException ignored) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void printTree(Node root) {
