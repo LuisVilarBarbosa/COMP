@@ -7,7 +7,7 @@ NAME2: Luís Barbosa, NR2: up201405729, GRADE2: 18, CONTRIBUTION2: 30%
 
 NAME3: Paulo Santos, NR3: up201403745, GRADE3: <0 to 20 value>, CONTRIBUTION3: <0 to 100 %>
 
-NAME4: Sérgio Ferreira, NR4: up201403074, GRADE4: <0 to 20 value>, CONTRIBUTION4: <0 to 100 %>
+NAME4: Sérgio Ferreira, NR4: up201403074, GRADE4: 17, CONTRIBUTION4: 23.3%
  
 ** SUMMARY: 
 
