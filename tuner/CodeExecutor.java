@@ -159,7 +159,7 @@ class CodeExecutor {
     private void writeLog() throws IOException {
         Path path = Paths.get("output.txt");
         for (Pragma p : all_pragmas) {
-            String result = "Best execution of " + p.varName + ": " + p.bestExecution + " _ " + p.bestExecutionTime + " ///// " + p.referenceValue + "\n";
+            String result = "Best execution of " + p.varName + " was " + p.bestExecution + " with a execution time of " + p.bestExecutionTime + "ms.\n";
             Files.write(path, result.getBytes(), StandardOpenOption.APPEND);
         }
         Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);

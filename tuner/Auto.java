@@ -1,7 +1,6 @@
 package tuner;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.*;
@@ -68,7 +67,7 @@ public class Auto {
             LocalDateTime now = LocalDateTime.now();
             String current_time = dtf.format(now) + "\n";
             Files.write(path, current_time.getBytes(), StandardOpenOption.APPEND);
-            
+
             String division = "-------------------\n";
             Files.write(path, division.getBytes(), StandardOpenOption.APPEND);
         } catch (FileAlreadyExistsException ignored) {
