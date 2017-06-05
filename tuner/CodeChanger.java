@@ -165,9 +165,9 @@ class CodeChanger {
                 stmt3 = p.varName + " += " + p.inc;
             }
             else if(p.type.equals("random")){
-                stmt1 = p.varName + " = " p.startValue + " + rand() % (p.endValue - p.startValue + 1), " + "_TUNER_ITERATOR_varName = 0";
-                stmt2 = "_TUNER_ITERATOR_varName < " + p.inc;
-                stmt3 = "_TUNER_ITERATOR_varName++, " + p.varName + " = " + p.startValue + " rand() % (p.endValue - p.startValue + 1)";
+                stmt1 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + "-" + p.startValue + "+1), _TUNER_ITERATOR_"+ p.varName + "= 0";
+                stmt2 = "_TUNER_ITERATOR_" + p.varName + "< " + p.inc;
+                stmt3 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + "-" + p.startValue + "+1)," + "_TUNER_ITERATOR_" + p.varName + "++";
             }
 
             String line = code.get(i);
