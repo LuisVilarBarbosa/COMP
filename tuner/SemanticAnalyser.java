@@ -79,8 +79,8 @@ public class SemanticAnalyser {
     }
 
     private void verifyPragmaDataTypes(Node root) throws Exception {
-        final String nonDecimals = "\\d+";
-        final String decimals = "\\d+\\.\\d+";
+        final String nonDecimals = "([0-9]+)";
+        final String decimals = "([0-9]+(.[0-9]*))?";
         final Pattern pattern, pattern2;
         final Matcher matcher, matcher2, matcher3, matcher4, matcher5, matcher6, matcher7, matcher8;
 
