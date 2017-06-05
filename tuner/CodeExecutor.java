@@ -95,6 +95,11 @@ class CodeExecutor {
         for (String[] m : cleanOutputMessages)
             checkBetterExecution(m);
 
+        for (Pragma p : all_pragmas) {
+            System.out.println("Best execution of " + p.varName + ": " + p.bestExecution + ", with value of " + p.bestExecutionValue + " and execution time of " + p.bestExecutionTime);
+            System.out.println("Reference of " + p.varName + ": " + p.referenceExecution + " with a value of " + p.referenceValue);
+        }
+
         writeLog();
     }
 
@@ -171,7 +176,7 @@ class CodeExecutor {
         for (Pragma p : all_pragmas) {
             String result = "Best execution of " + p.varName + " was " + p.bestExecution + " with a error of " + p.bestExecutionValue + ".\n";
             Files.write(path, result.getBytes(), StandardOpenOption.APPEND);
-            String reference = "Referece execution was " + p.referenceExecution + " with " + p.referenceValue + ".\n";
+            String reference = "Referece of " + p.varName + ": " + p.referenceExecution + " with a value of " + p.referenceValue + ".\n";
             Files.write(path, reference.getBytes(), StandardOpenOption.APPEND);
         }
         Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
