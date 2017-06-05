@@ -155,11 +155,11 @@ class CodeChanger {
         if(p.type.equals("explore")){
             stmt1 = p.varName + " = " + p.startValue;
             stmt2 = p.varName + " <= " + p.endValue;
-            stmt3 = p.varName + " += " + p.inc;
+            stmt3 = p.varName + " += " + p.controlValue;
         }
         else if(p.type.equals("random")){
             stmt1 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + " - " + p.startValue + " + 1), _TUNER_ITERATOR_"+ p.varName + " = 0";
-            stmt2 = "_TUNER_ITERATOR_" + p.varName + " < " + p.inc;
+            stmt2 = "_TUNER_ITERATOR_" + p.varName + " < " + p.controlValue;
             stmt3 = p.varName + " = " + p.startValue + " + rand() % (" + p.endValue + " - " + p.startValue + " + 1)," + "_TUNER_ITERATOR_" + p.varName + "++";
         }
 

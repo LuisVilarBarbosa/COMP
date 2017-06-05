@@ -5,7 +5,7 @@ class Pragma {
     String varName;
     String startValue;
     String endValue;
-    String inc;
+    String controlValue;    // increment value in "explore" and number of attempts in "random"
     String max_abs_errorVarName;
     Double max_abs_error;
 
@@ -16,12 +16,12 @@ class Pragma {
     Double bestExecutionValue;
     Double bestExecutionTime;
 
-    Pragma(String type, String varName, String startValue, String endValue, String inc, String max_abs_errorVarName, String max_abs_error, String referenceExecution) {
+    Pragma(String type, String varName, String startValue, String endValue, String controlValue, String max_abs_errorVarName, String max_abs_error, String referenceExecution) {
         this.type = type;
         this.varName = varName;
         this.startValue = startValue;
         this.endValue = endValue;
-        this.inc = inc;
+        this.controlValue = controlValue;
         this.max_abs_errorVarName = max_abs_errorVarName;
         this.max_abs_error = Double.parseDouble(max_abs_error);
         this.referenceExecution = Double.parseDouble(referenceExecution);
