@@ -137,7 +137,7 @@ public class SemanticAnalyser {
             Node var = root.getChildren().get(0);
             ArrayList<Node> children = var.getChildren();
             if (children.size() < 2 && children.size() > 4)
-                throw new Exception("The interval indicated in an 'explore' pragma must start and end with different values. The pragma will be ignored.");
+                throw new Exception("The interval indicated in an '" + root.getInfo() + "' pragma must start and end with different values. The pragma will be ignored.");
             Node child1 = children.get(0);
             Node child2 = children.get(1);
             if (Double.parseDouble(child1.getInfo()) > Double.parseDouble(child2.getInfo())) {

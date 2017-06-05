@@ -37,7 +37,7 @@ public class Auto {
                 CodeChanger codeChanger = new CodeChanger(semanticAnalyser.getCodeLines(), semanticAnalyser.getPragmaScopes(), semanticAnalyser.getHIRs());
                 codeChanger.codeVariantsTest();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -61,8 +61,7 @@ public class Auto {
 
     private static void initializeLog() {
         try {
-            Files.createFile(path);
-
+            initializeLogFile();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
             String current_time = dtf.format(now) + "\n";
@@ -70,10 +69,17 @@ public class Auto {
 
             String division = "-------------------\n";
             Files.write(path, division.getBytes(), StandardOpenOption.APPEND);
-        } catch (FileAlreadyExistsException ignored) {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void initializeLogFile() {
+        try {
+            Files.createFile(path);
+        } catch (IOException ignored) {
+        }
+
     }
 
     private static void printTree(Node root) {

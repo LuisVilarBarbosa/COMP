@@ -11,6 +11,6 @@ int main() {
 		acc = acc + buf[i];
 	}
 	acc = acc + STEP;
-	#pragma tuner max_abs_error acc 5
+	#pragma tuner max_abs_error acc 50
 	return 0;
 }
