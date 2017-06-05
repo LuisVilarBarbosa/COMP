@@ -142,10 +142,7 @@ class CodeExecutor {
             Double new_exec_time = Double.parseDouble(message[2]);
             Double new_exec_value = Double.parseDouble(message[3]);
 
-            if (Double.compare(new_exec_value, p.bestExecutionValue) < 0)
-                p.validTime(message[1], new_exec_value, new_exec_time);
-            else if (Double.compare(new_exec_value, p.bestExecutionValue) == 0 && Double.compare(new_exec_time, p.bestExecutionTime) <= 0)
-                p.validTime(message[1], new_exec_value, new_exec_time);
+            p.validTime(message[1], new_exec_value, new_exec_time);
         }
     }
 
@@ -155,7 +152,7 @@ class CodeExecutor {
      * @param message String array with var name, var execution, and var execution time
      * @return true if reference value was defined, else false
      */
-    private boolean setReferenceValue(String[] message) {
+    private void setReferenceValue(String[] message) {
         Pragma p = getPragma(message[0]);
         Double referenceExecution = Double.parseDouble(message[1]);
         if (Objects.equals(p.referenceExecution, referenceExecution)) {
@@ -166,9 +163,7 @@ class CodeExecutor {
             p.referenceValue = referenceValue;
             p.bestExecutionValue = referenceValue;
             p.bestExecutionTime = referenceTime;
-            return true;
         }
-        return false;
     }
 
     private void writeLog() throws IOException {
