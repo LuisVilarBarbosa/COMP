@@ -98,7 +98,7 @@ void Reference(): {Token t;}
 	t=<REFERENCE>
 	{jjtThis.val = t.image;}
 	<LEFT_PARENTHESES>
-	(Var() | t=<RANDOM>)
+	Var()
 	<EQUAL>
 	Value()
 	<RIGHT_PARENTHESES>
