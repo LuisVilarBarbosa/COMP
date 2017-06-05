@@ -1,6 +1,5 @@
 package tuner;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.*;
 import java.util.*;
 
