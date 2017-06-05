@@ -82,11 +82,13 @@ void Spec(): {Token t;}
 void Macro(): {Token t;}
 {
 	t=<VAR>
-	{jjtThis.val = t.image;}
+    {jjtThis.val = t.image;}
 	<LEFT_PARENTHESES>
 	Value()
 	<COMMA>
 	Value()
+	(<COMMA>
+     Value())?
 	<RIGHT_PARENTHESES>
 }
 
