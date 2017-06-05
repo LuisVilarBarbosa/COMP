@@ -1,2 +1,1 @@
-jjtree SyntacticAnalyser.jjt
-javacc SyntacticAnalyser.jj
+jjtree SyntacticAnalyser.jjt && javacc SyntacticAnalyser.jj
