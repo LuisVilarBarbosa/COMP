@@ -1,3 +1,4 @@
+random
 for (statement1; statement2; statement3) {
 	LARGE_INTEGER _TUNER_FREQUENCY_exploreVarName;
 	LARGE_INTEGER _TUNER_START_exploreVarName;
