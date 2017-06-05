@@ -10,6 +10,7 @@ class CodeExecutor {
     private String filePath;
 
     private ArrayList<Pragma> all_pragmas;
+    private int printf_size = 4;
 
     CodeExecutor(String filePath) {
         if (!isValid(filePath))
@@ -80,7 +81,7 @@ class CodeExecutor {
         outputMessages = command.getOutputStreamLines();
         for (String s : outputMessages) {
             String[] message = s.split("_");
-            if (!message[0].isEmpty() && Character.isLetter(message[0].charAt(0)))
+            if (!message[0].isEmpty() && Character.isLetter(message[0].charAt(0)) && message.length == printf_size)
                 cleanOutputMessages.add(message);
         }
 

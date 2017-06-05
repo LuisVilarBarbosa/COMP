@@ -58,7 +58,7 @@ class CodeChanger {
             if (children.size() >= 2) {
                 Node n1 = children.get(0);
                 Node n2 = children.get(1);
-                if (n1.getInfo().equals("explore") && n2.getInfo().equals("max_abs_error")) {
+                if ((n1.getInfo().equals("explore") || n1.getInfo().equals("random")) && n2.getInfo().equals("max_abs_error")) {
                     ArrayList<Node> exploreChildren = n1.getChildren();
                     String exploreVarName = exploreChildren.get(0).getInfo();
                     ArrayList<Node> varChildren = exploreChildren.get(0).getChildren();
@@ -68,6 +68,7 @@ class CodeChanger {
                     if(varChildren.size() == 3)
                         inc = varChildren.get(2).getInfo();
 
+
                     ArrayList<Node> max_abs_errorChildren = n2.getChildren();
                     String max_abs_errorVarName = max_abs_errorChildren.get(0).getInfo();
                     String max_abs_errorValue = max_abs_errorChildren.get(1).getInfo();
@@ -75,7 +76,7 @@ class CodeChanger {
                     ArrayList<Node> referenceChildren = exploreChildren.get(1).getChildren();
                     String referenceExecution = referenceChildren.get(1).getInfo();
 
-                    Pragma p = new Pragma(exploreVarName, startValue, endValue, inc, max_abs_errorVarName, max_abs_errorValue, referenceExecution);
+                    Pragma p = new Pragma(n1.getInfo(), exploreVarName, startValue, endValue, inc, max_abs_errorVarName, max_abs_errorValue, referenceExecution);
                     all_pragmas.add(p);
 
                     ArrayList<String> newEndCode = loadScopeEnd();
@@ -156,8 +157,24 @@ class CodeChanger {
     }
 
     private void adjustCode(ArrayList<String> code, Pragma p) {
+        Random random = new Random();
         for (int i = 0; i < code.size(); i++) {
+            String stmt1 = null, stmt2 = null, stmt3 = null;
+            if(p.type.equals("explore")){
+                stmt1 = p.varName + " = " + p.startValue;
+                stmt2 = p.varName + " < " + p.endValue; //TODO qual é que querias aqui?
+                stmt3 = p.varName + " += " + p.inc;
+            }
+            else if(p.type.equals("random")){
+                int r = random.nextInt(Integer.parseInt(p.endValue)-Integer.parseInt(p.startValue)+1);
+                stmt1 = p.varName + " = " + r + ", " + "int i = 0";
+                stmt2 = "i < " + p.inc;
+                stmt3 = "i++";
+            }
             String line = code.get(i);
+            line = line.replaceAll("statement1", stmt1);
+            line = line.replaceAll("statement2", stmt2);
+            line = line.replaceAll("statement3", stmt3);
             line = line.replaceAll("varType", "double");
             line = line.replaceAll("exploreVarName", p.varName);
             line = line.replaceAll("startValue", p.startValue);
