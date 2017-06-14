@@ -2,11 +2,11 @@ package tuner;
 
 import java.util.ArrayList;
 
-public class Node {
+public class AutoNode {
     private String info;
-    private ArrayList<Node> children;
+    private ArrayList<AutoNode> children;
 
-    public Node(String info) {
+    public AutoNode(String info) {
         if (info == null)
             throw new NullPointerException();
         this.info = info;
@@ -17,11 +17,11 @@ public class Node {
         return info;
     }
 
-    public ArrayList<Node> getChildren() {
+    public ArrayList<AutoNode> getChildren() {
         return children;
     }
 
-    public void addChild(Node n) {
+    public void addChild(AutoNode n) {
         children.add(n);
     }
 
@@ -29,13 +29,13 @@ public class Node {
         children.remove(index);
     }
 
-    public Node getParent(Node node) {
-        for (Node n : children) {
-            if (n.equals(node))
+    public AutoNode getParent(AutoNode autoNode) {
+        for (AutoNode n : children) {
+            if (n.equals(autoNode))
                 return this;
         }
-        for (Node n : children) {
-            Node parent = n.getParent(node);
+        for (AutoNode n : children) {
+            AutoNode parent = n.getParent(autoNode);
             if (parent != null)
                 return parent;
         }
@@ -45,12 +45,12 @@ public class Node {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Node)) return false;
+        if (!(o instanceof AutoNode)) return false;
 
-        Node node = (Node) o;
+        AutoNode autoNode = (AutoNode) o;
 
-        if (!info.equals(node.info)) return false;
-        return children.equals(node.children);
+        if (!info.equals(autoNode.info)) return false;
+        return children.equals(autoNode.children);
     }
 
 }

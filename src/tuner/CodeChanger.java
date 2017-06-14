@@ -1,13 +1,15 @@
 package tuner;
 
 import java.io.*;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
 class CodeChanger {
-    private static final boolean isWindows = System.getProperty("os.name").contains("Win");
+    private static final boolean isWindows = AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty("os.name")).contains("Win");
 
     private static final String templates_folder = "c_template_code/";
     private static final String includes_global = templates_folder + "includes_global.c";
@@ -23,10 +25,10 @@ class CodeChanger {
     private final String testCodeFile = "_TUNER_FILE_WITH_COMPLETE_SOURCE_CODE_TO_TEST.c";
     private ArrayList<String> codeLines;
     private ArrayList<PragmaScope> pragmaScopes;
-    private ArrayList<Node> HIRs;
+    private ArrayList<AutoNode> HIRs;
     private ArrayList<Pragma> allPragmas;
 
-    CodeChanger(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<Node> HIRs) {
+    CodeChanger(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<AutoNode> HIRs) {
         this.codeLines = codeLines;
         this.pragmaScopes = pragmaScopes;
         this.HIRs = HIRs;
@@ -42,7 +44,7 @@ class CodeChanger {
             codeExecutor.exec(allPragmas);
         else
             System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
-        codeExecutor.delete();
+        //codeExecutor.delete();
     }
 
     private ArrayList<String> changeCCode() throws IOException {
@@ -51,26 +53,26 @@ class CodeChanger {
         for (int i = 0; i < HIRs.size(); i++) {
             int scopeBegin = pragmaScopes.get(i).getStartIndex() + 1;
             int scopeEnd = pragmaScopes.get(i).getEndIndex();
-            ArrayList<Node> children = HIRs.get(i).getChildren();
+            ArrayList<AutoNode> children = HIRs.get(i).getChildren();
 
             if (children.size() >= 2) {
-                Node n1 = children.get(0);
-                Node n2 = children.get(1);
+                AutoNode n1 = children.get(0);
+                AutoNode n2 = children.get(1);
                 if ((n1.getInfo().equals("explore") || n1.getInfo().equals("random")) && n2.getInfo().equals("max_abs_error")) {
-                    ArrayList<Node> exploreChildren = n1.getChildren();
+                    ArrayList<AutoNode> exploreChildren = n1.getChildren();
                     String exploreVarName = exploreChildren.get(0).getInfo();
-                    ArrayList<Node> varChildren = exploreChildren.get(0).getChildren();
+                    ArrayList<AutoNode> varChildren = exploreChildren.get(0).getChildren();
                     String startValue = varChildren.get(0).getInfo();
                     String endValue = varChildren.get(1).getInfo();
                     String inc = "1";
                     if (varChildren.size() == 3)
                         inc = varChildren.get(2).getInfo();
 
-                    ArrayList<Node> max_abs_errorChildren = n2.getChildren();
+                    ArrayList<AutoNode> max_abs_errorChildren = n2.getChildren();
                     String max_abs_errorVarName = max_abs_errorChildren.get(0).getInfo();
                     String max_abs_errorValue = max_abs_errorChildren.get(1).getInfo();
 
-                    ArrayList<Node> referenceChildren = exploreChildren.get(1).getChildren();
+                    ArrayList<AutoNode> referenceChildren = exploreChildren.get(1).getChildren();
                     String referenceExecution = referenceChildren.get(1).getInfo();
 
                     Pragma p = new Pragma(n1.getInfo(), exploreVarName, startValue, endValue, inc, max_abs_errorVarName, max_abs_errorValue, referenceExecution);
@@ -149,12 +151,13 @@ class CodeChanger {
             lines.add(line);
         bufferedReader.close();
         inputStreamReader.close();
-        fileInputStream.close();
         return lines;
     }
 
     private void adjustCode(ArrayList<String> code, Pragma p) {
-        String stmt1 = null, stmt2 = null, stmt3 = null;
+        String stmt1 = "";
+        String stmt2 = "";
+        String stmt3 = "";
         if (p.type.equals("explore")) {
             stmt1 = p.varName + " = " + p.startValue;
             stmt2 = p.varName + " <= " + p.endValue;
@@ -182,10 +185,9 @@ class CodeChanger {
 
     private void checkIfAllPragmaVarsAreDifferent() throws Exception {
         ArrayList<String> allVariables = new ArrayList<>();
-        for (int i = 0; i < HIRs.size(); i++) {
-            Node root = HIRs.get(i);
+        for (AutoNode root : HIRs) {
             if (root.getChildren().size() > 0) {
-                Node child = root.getChildren().get(0);
+                AutoNode child = root.getChildren().get(0);
                 if (child.getChildren().size() > 0) {
                     String grandchild = child.getChildren().get(0).getInfo();
                     allVariables.add(grandchild);

@@ -17,7 +17,7 @@ public class Command {
 
     public Command(String... command) {
         this.processBuilder = new ProcessBuilder(command);
-        this.storeOutput = false;
+        this.storeOutput = true;
         this.errorStreamLines = new ArrayList<>();
         this.outputStreamLines = new ArrayList<>();
     }

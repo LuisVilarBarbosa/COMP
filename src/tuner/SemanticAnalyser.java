@@ -7,10 +7,10 @@ import java.util.regex.Pattern;
 public class SemanticAnalyser {
     private ArrayList<String> codeLines;
     private ArrayList<PragmaScope> pragmaScopes;
-    private ArrayList<Node> HIRs;
+    private ArrayList<AutoNode> HIRs;
     private Pattern number;
 
-    public SemanticAnalyser(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<Node> syntacticAnalysisTrees) {
+    public SemanticAnalyser(ArrayList<String> codeLines, ArrayList<PragmaScope> pragmaScopes, ArrayList<AutoNode> syntacticAnalysisTrees) {
         number = Pattern.compile("([0-9]+(.[0-9]*)?)");
         this.codeLines = codeLines;
         this.pragmaScopes = pragmaScopes;
@@ -43,23 +43,23 @@ public class SemanticAnalyser {
         return pragmaScopes;
     }
 
-    public ArrayList<Node> getHIRs() {
+    public ArrayList<AutoNode> getHIRs() {
         return HIRs;
     }
 
-    private ArrayList<Node> cleanTrees(ArrayList<Node> syntacticAnalysisTrees) {
-        ArrayList<Node> HIRs = syntacticAnalysisTrees;
+    private ArrayList<AutoNode> cleanTrees(ArrayList<AutoNode> syntacticAnalysisTrees) {
+        ArrayList<AutoNode> HIRs = syntacticAnalysisTrees;
         for (int i = 0; i < HIRs.size(); i++)
             HIRs.set(i, cleanTree(HIRs.get(i)));
         return HIRs;
     }
 
-    private Node cleanTree(Node root) {
-        Node newRoot = new Node(root.getInfo());
-        ArrayList<Node> children = root.getChildren();
+    private AutoNode cleanTree(AutoNode root) {
+        AutoNode newRoot = new AutoNode(root.getInfo());
+        ArrayList<AutoNode> children = root.getChildren();
         for (int i = 1; i < children.size(); i++) {
-            Node child1 = children.get(i - 1);
-            Node child2 = children.get(i);
+            AutoNode child1 = children.get(i - 1);
+            AutoNode child2 = children.get(i);
             Matcher matcher = number.matcher(child1.getInfo());
             if (child1.getInfo().equals(child2.getInfo()) && !matcher.matches()) {
                 child1.getChildren().addAll(child2.getChildren());
@@ -78,18 +78,18 @@ public class SemanticAnalyser {
         return newRoot;
     }
 
-    private void verifyPragmaDataTypes(Node root) throws Exception {
+    private void verifyPragmaDataTypes(AutoNode root) throws Exception {
         final String nonDecimals = "([0-9]+)";
         final String decimals = "([0-9]+(.[0-9]*))?";
         final Pattern pattern, pattern2;
         final Matcher matcher, matcher2, matcher3, matcher4, matcher5, matcher6, matcher7, matcher8;
 
         if (root.getChildren().size() > 0) {
-            Node var = root.getChildren().get(0);
-            ArrayList<Node> children = var.getChildren();
+            AutoNode var = root.getChildren().get(0);
+            ArrayList<AutoNode> children = var.getChildren();
             if (children.size() == 2) {
-                Node child1 = children.get(0);
-                Node child2 = children.get(1);
+                AutoNode child1 = children.get(0);
+                AutoNode child2 = children.get(1);
                 if (child1.getChildren().size() > 0) {
                     String val1 = child1.getChildren().get(0).getInfo();
                     String val2 = child1.getChildren().get(1).getInfo();
@@ -135,51 +135,51 @@ public class SemanticAnalyser {
         }
     }
 
-    private void verifyVariablesValuesOrder(Node root) throws Exception {
+    private void verifyVariablesValuesOrder(AutoNode root) throws Exception {
         if (root.getInfo().equals("explore") || root.getInfo().equals("random")) {
-            Node var = root.getChildren().get(0);
-            ArrayList<Node> children = var.getChildren();
-            Node child1 = children.get(0);
-            Node child2 = children.get(1);
+            AutoNode var = root.getChildren().get(0);
+            ArrayList<AutoNode> children = var.getChildren();
+            AutoNode child1 = children.get(0);
+            AutoNode child2 = children.get(1);
             if (Double.parseDouble(child1.getInfo()) > Double.parseDouble(child2.getInfo())) {
                 children.set(0, child2);
                 children.set(1, child1);
                 System.out.println(var.getInfo() + ": The interval values were not in the correct order. The order has been changed.");
             }
         }
-        for (Node n : root.getChildren())
+        for (AutoNode n : root.getChildren())
             verifyVariablesValuesOrder(n);
     }
 
-    private void verifyPragmaInstructionsCompatibility(Node root) throws Exception {
-        ArrayList<Node> children = root.getChildren();
+    private void verifyPragmaInstructionsCompatibility(AutoNode root) throws Exception {
+        ArrayList<AutoNode> children = root.getChildren();
         if (children.size() >= 2) {
             if (((children.get(0).getInfo().equals("explore") || children.get(0).getInfo().equals("random")) && !children.get(1).getInfo().equals("max_abs_error")) || children.get(0).getInfo().equals("max_abs_error"))
                 throw new Exception("One start pragma is not compatible with the end pragma. They will be ignored.");
         }
-        for (Node n : root.getChildren())
+        for (AutoNode n : root.getChildren())
             verifyPragmaInstructionsCompatibility(n);
     }
 
-    private void verifyEqualVarNames(Node root) throws Exception {
-        ArrayList<Node> children = root.getChildren();
+    private void verifyEqualVarNames(AutoNode root) throws Exception {
+        ArrayList<AutoNode> children = root.getChildren();
         if (root.getInfo().equals("explore") || root.getInfo().equals("random")) {
             String var1 = children.get(0).getInfo();
             String var2 = children.get(1).getChildren().get(0).getInfo();
             if (!var1.equals(var2))
                 throw new Exception("One pragma refers two variables ('" + var1 + "' and '" + var2 + "') when it should refer only one. It will be ignored.");
         }
-        for (Node n : root.getChildren())
+        for (AutoNode n : root.getChildren())
             verifyEqualVarNames(n);
     }
 
-    private void verifyIfPassesReferenceValue(Node root) throws Exception {
+    private void verifyIfPassesReferenceValue(AutoNode root) throws Exception {
         if (root.getChildren().size() > 0) {
-            Node var = root.getChildren().get(0);
-            ArrayList<Node> children = var.getChildren();
+            AutoNode var = root.getChildren().get(0);
+            ArrayList<AutoNode> children = var.getChildren();
             if (children.size() == 2) {
-                Node child1 = children.get(0);
-                Node child2 = children.get(1);
+                AutoNode child1 = children.get(0);
+                AutoNode child2 = children.get(1);
                 if (child1.getChildren().size() > 1) {
                     Double val1 = Double.parseDouble(child1.getChildren().get(0).getInfo());
                     Double val2 = Double.parseDouble(child1.getChildren().get(1).getInfo());

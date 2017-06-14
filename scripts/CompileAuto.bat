@@ -1,7 +1,7 @@
 @echo off
 cd ..
 mkdir bin
-javac -d bin JJTree/*.java
-javac -d bin tuner/*.java
+javac -d bin src/JJTree/*.java
+javac -d bin src/tuner/*.java
 cd scripts
 pause

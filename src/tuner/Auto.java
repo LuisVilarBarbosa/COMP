@@ -3,7 +3,10 @@ package tuner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,9 +34,9 @@ public class Auto {
                 FileReader fileReader = new FileReader(args[i]);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 Parser parser = new Parser(bufferedReader);
-                // for(Node root : parser.getSyntacticAnalysisTrees()) printTree(root);
+                // for(AutoNode root : parser.getSyntacticAnalysisTrees()) printTree(root);
                 SemanticAnalyser semanticAnalyser = new SemanticAnalyser(parser.getCodeLines(), parser.getPragmaScopes(), parser.getSyntacticAnalysisTrees());
-                // for(Node root : semanticAnalyser.getHIRs()) printTree(root);
+                // for(AutoNode root : semanticAnalyser.getHIRs()) printTree(root);
                 CodeChanger codeChanger = new CodeChanger(semanticAnalyser.getCodeLines(), semanticAnalyser.getPragmaScopes(), semanticAnalyser.getHIRs());
                 codeChanger.codeVariantsTest();
             } catch (Exception e) {
@@ -66,7 +69,6 @@ public class Auto {
             LocalDateTime now = LocalDateTime.now();
             String current_time = dtf.format(now) + "\n";
             Files.write(path, current_time.getBytes(), StandardOpenOption.APPEND);
-
             String division = "-------------------\n";
             Files.write(path, division.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
@@ -82,19 +84,19 @@ public class Auto {
 
     }
 
-    private static void printTree(Node root) {
+    private static void printTree(AutoNode root) {
         int indentation = 0;
         StringBuilder sb = new StringBuilder();
         printTreeAux(root, sb, indentation);
         System.out.println(sb);
     }
 
-    private static void printTreeAux(Node node, StringBuilder stringBuilder, int indentation) {
+    private static void printTreeAux(AutoNode autoNode, StringBuilder stringBuilder, int indentation) {
         for (int i = 0; i < indentation; i++)
             stringBuilder.append(" ");
-        stringBuilder.append(node.getInfo()).append("\n");
+        stringBuilder.append(autoNode.getInfo()).append("\n");
 
-        for (Node n : node.getChildren())
+        for (AutoNode n : autoNode.getChildren())
             printTreeAux(n, stringBuilder, indentation + 1);
     }
 
