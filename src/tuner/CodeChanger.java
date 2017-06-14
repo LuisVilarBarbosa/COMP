@@ -1,6 +1,7 @@
 package tuner;
 
 import java.io.*;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -9,18 +10,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 class CodeChanger {
+    private static final boolean isJar = setIsJar();
     private static final boolean isWindows = AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty("os.name")).contains("Win");
 
     private static final String templates_folder = "c_template_code/";
-    private static final String includes_global = templates_folder + "includes_global.c";
-    private static final String includes_linux = templates_folder + "includes_linux.c";
-    private static final String includes_windows = templates_folder + "includes_windows.c";
-    private static final String pragma_footer1_linux = templates_folder + "pragma_footer1_linux.c";
-    private static final String pragma_footer1_windows = templates_folder + "pragma_footer1_windows.c";
-    private static final String pragma_footer2 = templates_folder + "pragma_footer2.c";
-    private static final String pragma_header1_linux = templates_folder + "pragma_header1_linux.c";
-    private static final String pragma_header1_windows = templates_folder + "pragma_header1_windows.c";
-    private static final String pragma_header2 = templates_folder + "pragma_header2.c";
+    private static String includes_global = "includes_global.c";
+    private static String includes_linux = "includes_linux.c";
+    private static String includes_windows = "includes_windows.c";
+    private static String pragma_footer1_linux = "pragma_footer1_linux.c";
+    private static String pragma_footer1_windows = "pragma_footer1_windows.c";
+    private static String pragma_footer2 = "pragma_footer2.c";
+    private static String pragma_header1_linux = "pragma_header1_linux.c";
+    private static String pragma_header1_windows = "pragma_header1_windows.c";
+    private static String pragma_header2 = "pragma_header2.c";
 
     private final String testCodeFile = "_TUNER_FILE_WITH_COMPLETE_SOURCE_CODE_TO_TEST.c";
     private ArrayList<String> codeLines;
@@ -44,7 +46,7 @@ class CodeChanger {
             codeExecutor.exec(allPragmas);
         else
             System.out.println("No tests will be performed. Fix any warning or error given by the compiler.");
-        //codeExecutor.delete();
+        codeExecutor.delete();
     }
 
     private ArrayList<String> changeCCode() throws IOException {
@@ -142,15 +144,13 @@ class CodeChanger {
     }
 
     private ArrayList<String> loadFile(String filename) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(filename);
-        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        InputStream is = CodeChanger.class.getClassLoader().getResourceAsStream(filename);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
         ArrayList<String> lines = new ArrayList<>();
         String line;
         while ((line = bufferedReader.readLine()) != null)
             lines.add(line);
         bufferedReader.close();
-        inputStreamReader.close();
         return lines;
     }
 
@@ -199,4 +199,24 @@ class CodeChanger {
             throw new Exception("The variables of different pragmas cannot have the same name.");
     }
 
+    private static void updateTemplates() {
+        includes_global = templates_folder + "includes_global.c";
+        includes_linux = templates_folder + "includes_linux.c";
+        includes_windows = templates_folder + "includes_windows.c";
+        pragma_footer1_linux = templates_folder + "pragma_footer1_linux.c";
+        pragma_footer1_windows = templates_folder + "pragma_footer1_windows.c";
+        pragma_footer2 = templates_folder + "pragma_footer2.c";
+        pragma_header1_linux = templates_folder + "pragma_header1_linux.c";
+        pragma_header1_windows = templates_folder + "pragma_header1_windows.c";
+        pragma_header2 = templates_folder + "pragma_header2.c";
+    }
+
+    private static boolean setIsJar() {
+        URL path = CodeChanger.class.getResource("CodeChanger.class");
+        if (path.toString().startsWith("jar:"))
+            return true;
+        else
+            updateTemplates();
+        return false;
+    }
 }
