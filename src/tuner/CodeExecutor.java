@@ -150,7 +150,6 @@ class CodeExecutor {
      * Defines the reference value of a pragma execution time.
      *
      * @param message String array with var name, var execution, and var execution time
-     * @return true if reference value was defined, else false
      */
     private void setReferenceValue(String[] message) {
         Pragma p = getPragma(message[0]);
@@ -189,14 +188,16 @@ class CodeExecutor {
      * Deletes the executable.
      */
     private void deleteCompiled() {
-        new File(executableName).delete();
+        if (!new File(executableName).delete())
+            System.err.println("Failed to delete compilation.");
     }
 
     /**
      * Deletes the file.
      */
     private void deleteFile() {
-        new File(filePath).delete();
+        if (!new File(filePath).delete())
+            System.err.println("Failed to delete execution.");
     }
 
     private void printStrings(ArrayList<String> strings) {

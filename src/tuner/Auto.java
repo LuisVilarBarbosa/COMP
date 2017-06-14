@@ -26,17 +26,17 @@ public class Auto {
 
         initializeLog();
 
-        for (int i = 0; i < args.length; i++) {
+        for (String arg : args) {
             try {
-                System.out.println("\n" + args[i] + ":");
-                String file_name = args[i] + ":\n";
+                System.out.println("\n" + arg + ":");
+                String file_name = arg + ":\n";
                 Files.write(path, file_name.getBytes(), StandardOpenOption.APPEND);
-                FileReader fileReader = new FileReader(args[i]);
+                FileReader fileReader = new FileReader(arg);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 Parser parser = new Parser(bufferedReader);
-                // for(AutoNode root : parser.getSyntacticAnalysisTrees()) printTree(root);
+                //for (AutoNode root : parser.getSyntacticAnalysisTrees()) printTree(root);
                 SemanticAnalyser semanticAnalyser = new SemanticAnalyser(parser.getCodeLines(), parser.getPragmaScopes(), parser.getSyntacticAnalysisTrees());
-                // for(AutoNode root : semanticAnalyser.getHIRs()) printTree(root);
+                //for (AutoNode root : semanticAnalyser.getHIRs()) printTree(root);
                 CodeChanger codeChanger = new CodeChanger(semanticAnalyser.getCodeLines(), semanticAnalyser.getPragmaScopes(), semanticAnalyser.getHIRs());
                 codeChanger.codeVariantsTest();
             } catch (Exception e) {
@@ -47,9 +47,9 @@ public class Auto {
 
     private static void verifyFilesNames(String[] filesNames) {
         ArrayList<String> errors = new ArrayList<>();
-        for (int i = 0; i < filesNames.length; i++)
-            if (!filesNames[i].endsWith(".c"))
-                errors.add(filesNames[i]);
+        for (String filesName : filesNames)
+            if (!filesName.endsWith(".c"))
+                errors.add(filesName);
         if (errors.size() != 0) {
             System.err.println("Invalid C files names:");
             printStrings(errors);
@@ -76,12 +76,14 @@ public class Auto {
         }
     }
 
+    /**
+     * Creates the file to output the log.
+     */
     private static void initializeLogFile() {
         try {
             Files.createFile(path);
         } catch (IOException ignored) {
         }
-
     }
 
     private static void printTree(AutoNode root) {
