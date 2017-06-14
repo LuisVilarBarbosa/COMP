@@ -10,19 +10,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 class CodeChanger {
-    private static final boolean isJar = setIsJar();
     private static final boolean isWindows = AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty("os.name")).contains("Win");
 
-    private static final String templates_folder = "c_template_code/";
-    private static String includes_global = "includes_global.c";
-    private static String includes_linux = "includes_linux.c";
-    private static String includes_windows = "includes_windows.c";
-    private static String pragma_footer1_linux = "pragma_footer1_linux.c";
-    private static String pragma_footer1_windows = "pragma_footer1_windows.c";
-    private static String pragma_footer2 = "pragma_footer2.c";
-    private static String pragma_header1_linux = "pragma_header1_linux.c";
-    private static String pragma_header1_windows = "pragma_header1_windows.c";
-    private static String pragma_header2 = "pragma_header2.c";
+    private static final String includes_global = "includes_global.c";
+    private static final String includes_linux = "includes_linux.c";
+    private static final String includes_windows = "includes_windows.c";
+    private static final String pragma_footer1_linux = "pragma_footer1_linux.c";
+    private static final String pragma_footer1_windows = "pragma_footer1_windows.c";
+    private static final String pragma_footer2 = "pragma_footer2.c";
+    private static final String pragma_header1_linux = "pragma_header1_linux.c";
+    private static final String pragma_header1_windows = "pragma_header1_windows.c";
+    private static final String pragma_header2 = "pragma_header2.c";
 
     private final String testCodeFile = "_TUNER_FILE_WITH_COMPLETE_SOURCE_CODE_TO_TEST.c";
     private ArrayList<String> codeLines;
@@ -49,7 +47,7 @@ class CodeChanger {
         codeExecutor.delete();
     }
 
-    private ArrayList<String> changeCCode() throws IOException {
+    private ArrayList<String> changeCCode() {
         HashMap<Integer, ArrayList<String>> codeToAddByIndex = new HashMap<>();
 
         for (int i = 0; i < HIRs.size(); i++) {
@@ -113,33 +111,48 @@ class CodeChanger {
         file.close();
     }
 
-    private ArrayList<String> loadIncludes() throws IOException {
+    private ArrayList<String> loadIncludes() {
         ArrayList<String> includes = new ArrayList<>();
-        includes.addAll(loadFile(includes_global));
-        if (isWindows)
-            includes.addAll(loadFile(includes_windows));
-        else
-            includes.addAll(loadFile(includes_linux));
+        try {
+            includes.addAll(loadFile(includes_global));
+            if (isWindows)
+                includes.addAll(loadFile(includes_windows));
+            else
+                includes.addAll(loadFile(includes_linux));
+        } catch (IOException e) {
+            System.err.println("Fail to load the includes scope.");
+            e.printStackTrace();
+        }
         return includes;
     }
 
-    private ArrayList<String> loadScopeBegin() throws IOException {
+    private ArrayList<String> loadScopeBegin() {
         ArrayList<String> pragmaHeader = new ArrayList<>();
-        if (isWindows)
-            pragmaHeader.addAll(loadFile(pragma_header1_windows));
-        else
-            pragmaHeader.addAll(loadFile(pragma_header1_linux));
-        pragmaHeader.addAll(loadFile(pragma_header2));
+        try {
+            if (isWindows)
+                pragmaHeader.addAll(loadFile(pragma_header1_windows));
+            else
+                pragmaHeader.addAll(loadFile(pragma_header1_linux));
+            pragmaHeader.addAll(loadFile(pragma_header2));
+        } catch (IOException e) {
+            System.err.println("Fail to load scope at the beginning.");
+            e.printStackTrace();
+        }
         return pragmaHeader;
     }
 
-    private ArrayList<String> loadScopeEnd() throws IOException {
+    private ArrayList<String> loadScopeEnd() {
         ArrayList<String> pragmaFooter = new ArrayList<>();
-        if (isWindows)
-            pragmaFooter.addAll(loadFile(pragma_footer1_windows));
-        else
-            pragmaFooter.addAll(loadFile(pragma_footer1_linux));
-        pragmaFooter.addAll(loadFile(pragma_footer2));
+        try {
+            if (isWindows)
+                pragmaFooter.addAll(loadFile(pragma_footer1_windows));
+            else
+                pragmaFooter.addAll(loadFile(pragma_footer1_linux));
+            pragmaFooter.addAll(loadFile(pragma_footer2));
+        } catch (IOException e) {
+            System.err.println("Fail to load scope at the end.");
+            e.printStackTrace();
+        }
         return pragmaFooter;
     }
 
@@ -197,26 +210,5 @@ class CodeChanger {
         HashSet<String> variablesSet = new HashSet<>(allVariables);
         if (variablesSet.size() != allVariables.size())
             throw new Exception("The variables of different pragmas cannot have the same name.");
-    }
-
-    private static void updateTemplates() {
-        includes_global = templates_folder + "includes_global.c";
-        includes_linux = templates_folder + "includes_linux.c";
-        includes_windows = templates_folder + "includes_windows.c";
-        pragma_footer1_linux = templates_folder + "pragma_footer1_linux.c";
-        pragma_footer1_windows = templates_folder + "pragma_footer1_windows.c";
-        pragma_footer2 = templates_folder + "pragma_footer2.c";
-        pragma_header1_linux = templates_folder + "pragma_header1_linux.c";
-        pragma_header1_windows = templates_folder + "pragma_header1_windows.c";
-        pragma_header2 = templates_folder + "pragma_header2.c";
-    }
-
-    private static boolean setIsJar() {
-        URL path = CodeChanger.class.getResource("CodeChanger.class");
-        if (path.toString().startsWith("jar:"))
-            return true;
-        else
-            updateTemplates();
-        return false;
     }
 }
